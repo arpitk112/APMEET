@@ -43,22 +43,26 @@
 
 /* Remote participants area */
 .conferenceView {
-    height: 100%;
-    width: calc(100% - 320px);
+    /* height: 120rem;
+    width: 20rem; */
     /* space for chat */
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    /* align-items: center;
+    justify-content: center; */
     gap: 16px;
     padding: 16px;
+
 }
 
 .conferenceView video {
-    width: 260px;
-    height: 160px;
+    width: 20%;
+    height: 239px;
     object-fit: cover;
     border-radius: 16px;
     background: black;
+    margin-left: 8px;
 }
 
 /* Chat panel */
@@ -148,6 +152,18 @@
         padding: 1.5rem;
         margin: 0 1rem;
     }
+
+    .conferenceView video {
+        width: 95%;
+    }
+}
+
+@media (min-width : 750) and (max-width: 850) {
+    .conferenceView video {
+        width: 85%;
+        height: 316px;
+    }
+
 }
 
 .mainStage {
