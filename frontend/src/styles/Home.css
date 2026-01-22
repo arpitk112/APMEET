@@ -1,0 +1,164 @@
+/* ================= RESET ================= */
+* {
+    box-sizing: border-box;
+}
+
+/* ================= NAVBAR ================= */
+
+.navBar {
+    height: 64px;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.navBar h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.navBar button {
+    text-transform: none;
+    font-weight: 500;
+}
+
+.navBar .MuiIconButton-root {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #374151;
+}
+
+/* ================= PAGE LAYOUT ================= */
+
+.meetContainer {
+    min-height: calc(100vh - 64px);
+    background: linear-gradient(180deg, #f9fafb, #ffffff);
+
+    display: flex;
+    align-items: flex-start;
+    /* 🔥 TOP ALIGN FIX */
+    justify-content: center;
+    gap: 4rem;
+    padding: 3rem;
+}
+
+/* ================= LEFT CARD ================= */
+
+.leftPanel {
+    background: #ffffff;
+    padding: 3rem;
+    border-radius: 20px;
+    max-width: 480px;
+    width: 100%;
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.05),
+        0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.leftPanel h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #111827;
+    line-height: 1.25;
+    margin-bottom: 1.8rem;
+}
+
+/* ================= INPUT AREA ================= */
+
+.leftPanel>div>div {
+    display: flex;
+    gap: 1rem;
+}
+
+.leftPanel .MuiTextField-root {
+    flex: 1;
+}
+
+.leftPanel .MuiButton-contained {
+    padding: 0 1.8rem;
+    font-weight: 600;
+    border-radius: 10px;
+}
+
+/* ================= RIGHT SVG ================= */
+
+.rightPanel {
+    margin-top: 3rem;
+    /* aligns SVG with top of card */
+}
+
+.rightPanel img {
+    width: 420px;
+    max-width: 100%;
+    display: block;
+}
+
+/* ================= TABLET ================= */
+
+@media (max-width: 1024px) {
+    .meetContainer {
+        gap: 2.5rem;
+        padding: 2rem;
+    }
+
+    .rightPanel img {
+        width: 340px;
+    }
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px) {
+    .meetContainer {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .rightPanel {
+        margin-top: 2rem;
+    }
+
+    .leftPanel {
+        padding: 2rem;
+    }
+
+    .leftPanel h2 {
+        font-size: 1.6rem;
+    }
+
+    .leftPanel>div>div {
+        flex-direction: column;
+    }
+
+    .leftPanel .MuiButton-contained {
+        height: 48px;
+    }
+}
+
+/* ================= SMALL MOBILE ================= */
+
+@media (max-width: 480px) {
+    .navBar {
+        padding: 0 1rem;
+    }
+
+    .leftPanel {
+        padding: 1.5rem;
+    }
+
+    .leftPanel h2 {
+        font-size: 1.4rem;
+    }
+
+    .rightPanel img {
+        width: 260px;
+    }
+}

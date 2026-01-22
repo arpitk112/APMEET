@@ -1,0 +1,268 @@
+.meetVideoContainer {
+    height: 100vh;
+    width: 100vw;
+    background: linear-gradient(180deg, #0f172a, #020617);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Local video (Picture-in-Picture) */
+.meetUserVideo {
+    position: absolute;
+    bottom: 110px;
+    left: 24px;
+
+    width: 180px;
+    height: 120px;
+    object-fit: cover;
+
+    border-radius: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+    z-index: 2;
+}
+
+/* Bottom control bar */
+.buttonContainers {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    display: flex;
+    gap: 1rem;
+    padding: 0.6rem 1.4rem;
+
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    border-radius: 40px;
+}
+
+.buttonContainers svg {
+    font-size: 2rem;
+}
+
+/* Remote participants area */
+.conferenceView {
+    height: 100%;
+    width: calc(100% - 320px);
+    /* space for chat */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 16px;
+}
+
+.conferenceView video {
+    width: 100%;
+    height: 80%;
+    object-fit: cover;
+    border-radius: 16px;
+    background: black;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px;
+}
+
+/* Chat panel */
+.chatRoom {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 95%;
+    width: 450px;
+    background: #958ab4;
+    border-left: 1px solid #e5e7eb;
+    z-index: 10;
+    border-radius: 20px;
+    margin-top: 10px;
+
+}
+
+.chatContainer {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.chattingArea {
+    margin-top: auto;
+    padding: 0.75rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.chattingArea button {
+    margin-left: 1rem;
+    height: 3.4rem;
+}
+
+
+/* ================= Lobby UI ================= */
+
+.lobbyContainer {
+    min-height: 100vh;
+    width: 100vw;
+    background: linear-gradient(180deg, #0f172a, #020617);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lobbyCard {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 420px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+.lobbyCard h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.lobbyVideo {
+    width: 100%;
+    border-radius: 12px;
+    background: #000;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+}
+
+.lobbyActions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* ================= Mobile ================= */
+
+@media (max-width: 480px) {
+    .lobbyCard {
+        padding: 1.5rem;
+        margin: 0 1rem;
+    }
+}
+
+.mainStage {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mainStage video {
+    width: 75%;
+    max-height: 80%;
+    border-radius: 18px;
+    object-fit: cover;
+}
+
+.stripVideo {
+    width: 140px;
+    height: 90px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.chatOpen .conferenceView {
+    width: calc(100% - 340px);
+}
+
+
+/* Own Css */
+/* ================= Messages ================= */
+
+.chattingDisplay {
+    flex: 1;
+    padding: 0.75rem;
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+/* Message bubble */
+.chatMessage {
+    max-width: 75%;
+    padding: 0.55rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+/* Sender */
+.sender {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+    display: block;
+    color: #6b7280;
+}
+
+/* Message text */
+.messageText {
+    margin: 0;
+}
+
+/* Other users (LEFT) */
+.otherMessage {
+    align-self: flex-start;
+    background: #f1f5f9;
+    color: #111827;
+}
+
+/* You (RIGHT) */
+.myMessage {
+    align-self: flex-end;
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.myMessage .sender {
+    color: #dbeafe;
+}
+
+/* ================= Chat Header ================= */
+
+.chatHeader {
+    margin-top: 6px;
+    height: 5rem;
+    padding: 0 1rem;
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+
+    border-bottom: 1px solid #e5e7eb;
+    background: rgba(255, 255, 255, 0.85);
+
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #0f172a;
+
+    flex-shrink: 0;
+    justify-content: left;
+    font-size: 2.5rem;
+}
+
+/* Own Css */
+
+.video {
+    height: 100%;
+    width: 100%;
+}

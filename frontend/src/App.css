@@ -1,0 +1,217 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* ================= Landing Page ================= */
+
+.landingPageContainer {
+  width: 100vw;
+  min-height: 100vh;
+  background-image: url("/background.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  color: white;
+}
+
+/* ================= Navbar ================= */
+
+.landingPageContainer nav {
+  padding: 1.2rem 1.6rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.35);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.landingPageContainer nav h2 {
+  font-size: 1.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: opacity 0.2s ease;
+}
+
+.landingPageContainer nav h2:hover {
+  opacity: 0.85;
+}
+
+.navList {
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+}
+
+.navList p,
+.navList div[role="button"] {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+  font-size: 0.95rem;
+}
+
+.navList p:hover,
+.navList div[role="button"]:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+/* Primary CTA */
+.navList div[role="button"] {
+  background: rgba(217, 117, 0, 0.9);
+  font-weight: 500;
+}
+
+.navList div[role="button"]:hover {
+  background: rgba(217, 117, 0, 1);
+}
+
+/* ================= Main Section ================= */
+
+.landingMainContainer {
+  display: flex;
+  justify-content: space-between;
+  padding: 3rem;
+  min-height: calc(100vh - 90px);
+  align-items: center;
+  gap: 3rem;
+}
+
+.landingMainContainer>div:nth-child(1) {
+  font-size: 2rem;
+  max-width: 600px;
+}
+
+.landingMainContainer>div:nth-child(1) h1 {
+  line-height: 1.2;
+}
+
+.landingMainContainer>div:nth-child(1) p {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.landingMainContainer>div:nth-child(1) div[role="button"] {
+  background: #D97500;
+  width: fit-content;
+  padding: 0.9rem 1.8rem;
+  border-radius: 15px;
+  margin-top: 2rem;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.landingMainContainer>div:nth-child(1) div[role="button"]:hover {
+  transform: translateY(-2px);
+  background: #c96a00;
+}
+
+.landingMainContainer>div:nth-child(1) div[role="button"] a {
+  text-decoration: none;
+  color: white;
+  font-size: 1.6rem;
+}
+
+.landingMainContainer>div:nth-child(2) img {
+  height: 75vh;
+  max-width: 100%;
+}
+
+/* ================= Other Existing Styles ================= */
+
+.navBar {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem;
+}
+
+.meetContainer {
+  display: flex;
+  padding-inline: 20px;
+  height: 80vh;
+  gap: 10vw;
+  justify-content: center;
+}
+
+.rightPanel {
+  position: absolute;
+  bottom: 0;
+}
+
+/* ================= Tablet ================= */
+
+@media (max-width: 1024px) {
+  .landingMainContainer {
+    padding: 2rem;
+    gap: 2rem;
+  }
+
+  .landingMainContainer>div:nth-child(1) {
+    font-size: 1.7rem;
+  }
+
+  .landingMainContainer>div:nth-child(2) img {
+    height: 60vh;
+  }
+}
+
+/* ================= Mobile ================= */
+
+@media (max-width: 768px) {
+  .landingPageContainer nav {
+    padding: 1rem;
+  }
+
+  .navList {
+    gap: 0.6rem;
+  }
+
+  .navList p,
+  .navList div[role="button"] {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.85rem;
+  }
+
+  .landingMainContainer {
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem 1.5rem;
+  }
+
+  .landingMainContainer>div:nth-child(1) {
+    font-size: 1.4rem;
+  }
+
+  .landingMainContainer>div:nth-child(1) div[role="button"] a {
+    font-size: 1.3rem;
+  }
+
+  .landingMainContainer>div:nth-child(2) img {
+    height: 45vh;
+  }
+}
+
+/* ================= Small Mobile ================= */
+
+@media (max-width: 480px) {
+  .landingPageContainer nav h2 {
+    font-size: 1.4rem;
+  }
+
+  .navList {
+    gap: 0.4rem;
+  }
+
+  .navList p,
+  .navList div[role="button"] {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+}
