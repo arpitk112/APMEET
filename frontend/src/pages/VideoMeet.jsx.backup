@@ -444,26 +444,6 @@ export default function VideoMeetComponent() {
         }
     }
 
-    // Re-attach local video stream when spotlight mode changes
-    useEffect(() => {
-        if (localVideoRef.current && window.localStream) {
-            localVideoRef.current.srcObject = window.localStream;
-        }
-    }, [spotlightVideo]);
-
-    // Re-attach local video stream when screen sharing stops
-    useEffect(() => {
-        if (localVideoRef.current && window.localStream && screen === false) {
-            // Small delay to ensure getUserMedia has completed
-            const timer = setTimeout(() => {
-                if (localVideoRef.current && window.localStream) {
-                    localVideoRef.current.srcObject = window.localStream;
-                }
-            }, 100);
-            return () => clearTimeout(timer);
-        }
-    }, [screen]);
-
     let handleEndCall = () => {
         try {
             if (localVideoRef.current && localVideoRef.current.srcObject) {
@@ -596,21 +576,17 @@ export default function VideoMeetComponent() {
                                         />
                                     ) : (
                                         videos.filter(v => v.socketId === spotlightVideo).map((video) => (
-                                            <div key={video.socketId} className={styles.videoWrapper}>
-                                                <video
-                                                    className={styles.mainVideo}
-                                                    ref={ref => {
-                                                        if (ref && video.stream) {
-                                                            ref.srcObject = video.stream;
-                                                        }
-                                                    }}
-                                                    autoPlay
-                                                    onClick={() => handleVideoClick(video.socketId)}
-                                                />
-                                                <div className={styles.videoLabel}>
-                                                    <span>Participant</span>
-                                                </div>
-                                            </div>
+                                            <video
+                                                key={video.socketId}
+                                                className={styles.mainVideo}
+                                                ref={ref => {
+                                                    if (ref && video.stream) {
+                                                        ref.srcObject = video.stream;
+                                                    }
+                                                }}
+                                                autoPlay
+                                                onClick={() => handleVideoClick(video.socketId)}
+                                            />
                                         ))
                                     )}
                                 </div>
@@ -626,9 +602,6 @@ export default function VideoMeetComponent() {
                                                 autoPlay
                                                 muted
                                             />
-                                            <div className={styles.thumbnailLabel}>
-                                                <span>{username} (You)</span>
-                                            </div>
                                         </div>
                                     )}
 
@@ -648,9 +621,6 @@ export default function VideoMeetComponent() {
                                                 }}
                                                 autoPlay
                                             />
-                                            <div className={styles.thumbnailLabel}>
-                                                <span>Participant</span>
-                                            </div>
                                         </div>
                                     ))}
                                 </div>
@@ -681,18 +651,14 @@ export default function VideoMeetComponent() {
                                     ))}
                                 </div>
 
-                                {/* Local video (Picture-in-Picture) - only show in grid mode */}
-                                <div className={styles.pipWrapper} onClick={handleLocalVideoClick}>
-                                    <video
-                                        className={styles.meetUserVideo}
-                                        ref={localVideoRef}
-                                        autoPlay
-                                        muted
-                                    ></video>
-                                    <div className={styles.pipLabel}>
-                                        <span>{username} (You)</span>
-                                    </div>
-                                </div>
+                                {/* Local video (Picture-in-Picture) */}
+                                <video
+                                    className={styles.meetUserVideo}
+                                    ref={localVideoRef}
+                                    autoPlay
+                                    muted
+                                    onClick={handleLocalVideoClick}
+                                ></video>
                             </>
                         )}
 
