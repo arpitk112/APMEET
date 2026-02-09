@@ -231,10 +231,6 @@ services:
 
 Contributions are welcome! Fork the repository, create a feature branch, make your changes, and open a pull request.
 
-## License
-
-ISC License
-
 ## Author
 
 **Arpit Kumar**
