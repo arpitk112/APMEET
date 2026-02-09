@@ -13,7 +13,7 @@ AP Meet is a video conferencing platform that supports high-quality video calls,
 - Screen sharing
 - Multi-participant support with grid and spotlight views
 - Responsive design for desktop and mobile devices
-- User authentication with JWT
+- Token-based user authentication
 - Meeting history for registered users
 - Modern UI built with Material-UI
 
@@ -32,7 +32,7 @@ AP Meet is a video conferencing platform that supports high-quality video calls,
 - Express 5
 - Socket.io
 - MongoDB with Mongoose
-- JWT for authentication
+- Token-based authentication with crypto
 - bcrypt for password hashing
 
 **WebRTC:**
@@ -69,7 +69,6 @@ npm install
 ```env
 MONGO_URI=your_mongodb_connection_string
 PORT=8000
-JWT_SECRET=your_jwt_secret_key_here
 ```
 
 4. Start the server:
@@ -187,7 +186,7 @@ APMEET/
 
 ## Authentication
 
-The application uses JWT-based authentication. Users can register with a username and password, and upon login, receive a JWT token stored in localStorage. Protected routes use the `withAuth` HOC to guard authenticated pages. Meeting history is only available to logged-in users.
+The application uses token-based authentication. When users log in, a random token is generated using `crypto.randomBytes()` and stored in the MongoDB user document. This token is then used to authenticate subsequent requests. Protected routes verify the token to ensure users are authenticated before accessing features like meeting history.
 
 ## Deployment
 
@@ -211,7 +210,6 @@ services:
 2. Set environment variables:
    - `MONGO_URI`: Your MongoDB connection string
    - `PORT`: Server port (default: 8000)
-   - `JWT_SECRET`: Secret key for JWT token generation
 3. Ensure WebSocket support is enabled for Socket.io
 4. Configure CORS to allow your frontend domain
 
@@ -229,27 +227,15 @@ services:
 - Configure proper STUN/TURN servers for production use
 - Update CORS settings on backend to match your frontend domain
 
----
+## Contributing
 
-## 🤝 Contributing
+Contributions are welcome! Fork the repository, create a feature branch, make your changes, and open a pull request.
 
-Contributions are welcome! Please follow these steps:
+## License
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+ISC License
 
----
-
-## 📝 License
-
-This project is licensed under the ISC License.
-
----
-
-## 👨‍💻 Author
+## Author
 
 **Arpit Kumar**
 
@@ -257,57 +243,15 @@ This project is licensed under the ISC License.
 - Project: AP Meet - Real-Time Video Conferencing Platform
 
 
----
+## Acknowledgments
 
-## 🙏 Acknowledgments
+Built with WebRTC, Socket.io, Material-UI, and Google's STUN servers.
 
-- WebRTC for peer-to-peer communication
-- Socket.io for real-time signaling
-- Material-UI for beautiful components
-- Google STUN servers for NAT traversal
+## Future Enhancements
 
----
-
-## 📸 Screenshots
-
-### Landing Page
-![Landing Page](./screenshots/landing.png)
-
-### Video Meeting - Grid View
-![Grid View](./screenshots/grid-view.png)
-
-### Video Meeting - Spotlight Mode
-![Spotlight Mode](./screenshots/spotlight.png)
-
-### In-Call Chat
-![Chat Panel](./screenshots/chat.png)
-
----
-
-## 🐛 Known Issues
-
-- Screen sharing may require HTTPS in production
-- Some browsers may require permission prompts for camera/mic
-- Mobile support is optimized but may vary by device
-
----
-
-## 🔮 Future Enhancements
-
-- [ ] Recording functionality
-- [ ] Virtual backgrounds
-- [ ] Breakout rooms
-- [ ] Polls and reactions
-- [ ] Calendar integration
-- [ ] End-to-end encryption
-- [ ] Mobile apps (React Native)
-
----
-
-<div align="center">
-
-**Made with ❤️ using React and Node.js**
-
-⭐ Star this repo if you find it helpful!
-
-</div>
+- Recording functionality
+- Virtual backgrounds
+- Breakout rooms
+- Polls and reactions
+- Calendar integration
+- End-to-end encryption
