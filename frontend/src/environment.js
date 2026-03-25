@@ -2,6 +2,6 @@
 const IS_PROD = import.meta.env.PROD;
 
 const server = import.meta.env.VITE_API_URL ||
-    (IS_PROD ? "https://apmeet.onrender.com" : "http://localhost:8000");
+    (IS_PROD ? "https://ameet-sdlc.onrender.com" : "http://localhost:8000");
 
 export default server;
