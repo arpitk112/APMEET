@@ -7,12 +7,10 @@ let timeOnLine = {}
 
 export const connectToSocket = (server) => {
     const io = new Server(server, {
-        // Not to be done at Production level
         cors: {
             origin: "*",
             methods: ["GET", "POST"],
-            allowedHeaders: "*",
-            credentials: true
+            allowedHeaders: ["*"]
         }
     });
 
