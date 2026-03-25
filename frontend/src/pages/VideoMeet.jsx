@@ -111,7 +111,9 @@ export default function VideoMeetComponent() {
 
     let getUserMediaSuccess = (stream) => {
         try {
-            window.localStream.getTracks().forEach(track => track.stop())
+            if (window.localStream) {
+                window.localStream.getTracks().forEach(track => track.stop())
+            }
         } catch (e) {
             console.log(e);
         }
@@ -192,8 +194,10 @@ export default function VideoMeetComponent() {
                 .catch((e) => console.log(e))
         } else {
             try {
-                let tracks = localVideoRef.current.srcObject.getTracks();
-                tracks.forEach(track => track.stop());
+                if (localVideoRef.current && localVideoRef.current.srcObject) {
+                    let tracks = localVideoRef.current.srcObject.getTracks();
+                    tracks.forEach(track => track.stop());
+                }
             } catch (e) { }
         }
     }
@@ -264,14 +268,14 @@ export default function VideoMeetComponent() {
                         }
                     }
 
-                    connections[socketListId].onaddstream = (event) => {
+                    connections[socketListId].ontrack = (event) => {
 
                         let videoExists = videoRef.current.find(video => video.socketId === socketListId);
 
                         if (videoExists) {
                             setVideos(videos => {
                                 const updateVideos = videos.map(video =>
-                                    video.socketId === socketListId ? { ...video, stream: event.stream } : video
+                                    video.socketId === socketListId ? { ...video, stream: event.streams[0] } : video
                                 );
                                 videoRef.current = updateVideos;
                                 return updateVideos;
@@ -279,7 +283,7 @@ export default function VideoMeetComponent() {
                         } else {
                             let newVideo = {
                                 socketId: socketListId,
-                                stream: event.stream,
+                                stream: event.streams[0],
                                 autoPlay: true,
                                 playsinline: true
                             }
