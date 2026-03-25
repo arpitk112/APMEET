@@ -273,13 +273,11 @@ export default function VideoMeetComponent() {
                         let videoExists = videoRef.current.find(video => video.socketId === socketListId);
 
                         if (videoExists) {
-                            setVideos(videos => {
-                                const updateVideos = videos.map(video =>
-                                    video.socketId === socketListId ? { ...video, stream: event.streams[0] } : video
-                                );
-                                videoRef.current = updateVideos;
-                                return updateVideos;
-                            })
+                            let updateVideos = videoRef.current.map(video =>
+                                video.socketId === socketListId ? { ...video, stream: event.streams[0] } : video
+                            );
+                            videoRef.current = updateVideos;
+                            setVideos(updateVideos);
                         } else {
                             let newVideo = {
                                 socketId: socketListId,
@@ -287,12 +285,10 @@ export default function VideoMeetComponent() {
                                 autoPlay: true,
                                 playsinline: true
                             }
-
-                            setVideos(videos => {
-                                const updatedVideos = [...videos, newVideo];
-                                videoRef.current = updatedVideos;
-                                return updatedVideos;
-                            });
+                            
+                            let updatedVideos = [...videoRef.current, newVideo];
+                            videoRef.current = updatedVideos;
+                            setVideos(updatedVideos);
                         }
                     };
 
