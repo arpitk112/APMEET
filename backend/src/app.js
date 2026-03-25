@@ -1,7 +1,7 @@
 import express from "express";
 import { createServer } from "node:http";
 import { connectToSocket } from "./controllers/socketManager.js";
-import "dotenv/config";
+import "dotenv/config"
 import mongoose from "mongoose";
 
 import cors from "cors";
