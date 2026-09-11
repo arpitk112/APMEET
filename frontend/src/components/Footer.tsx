@@ -7,11 +7,11 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import EmailIcon from "@mui/icons-material/Email";
 import LaunchIcon from "@mui/icons-material/Launch";
 
-export default function Footer() {
+export default function Footer(): React.JSX.Element {
     const navigate = useNavigate();
 
     // Generate a fresh random room code for the instant call link
-    const generateMeetingCode = () => {
+    const generateMeetingCode = (): string => {
         return `apm-${Math.random().toString(36).substring(2, 6)}-${Math.random().toString(36).substring(2, 6)}`;
     };
 

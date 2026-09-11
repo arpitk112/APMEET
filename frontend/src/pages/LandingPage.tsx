@@ -8,8 +8,8 @@ import BoltIcon from "@mui/icons-material/Bolt";
 import HighQualityIcon from "@mui/icons-material/HighQuality";
 import Footer from "../components/Footer";
 
-export default function LandingPage() {
-    const generateMeetingCode = () => {
+export default function LandingPage(): React.JSX.Element {
+    const generateMeetingCode = (): string => {
         return `apm-${Math.random().toString(36).substring(2, 6)}-${Math.random()
             .toString(36)
             .substring(2, 6)}`;
@@ -18,7 +18,7 @@ export default function LandingPage() {
     const code = generateMeetingCode();
     const router = useNavigate();
 
-    const handleGetStarted = () => {
+    const handleGetStarted = (): void => {
         const token = localStorage.getItem("token");
         if (token) {
             router("/home");
@@ -27,7 +27,7 @@ export default function LandingPage() {
         }
     };
 
-    const handleLoginClick = () => {
+    const handleLoginClick = (): void => {
         const token = localStorage.getItem("token");
         if (token) {
             router("/home");

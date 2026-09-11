@@ -1,13 +1,22 @@
-import { Server } from "socket.io";
+import { Server as SocketIOServer, Socket } from "socket.io";
+import { Server as HTTPServer } from "http";
+
+export interface ChatMessage {
+    id: string;
+    sender: string;
+    data: string;
+    "socket-id-sender": string;
+    timestamp: string;
+}
 
 // Stores room participants, chat history, and whiteboard strokes in memory
-let connections = {};
-let messages = {};
-let timeOnLine = {};
-let whiteboardData = {};
+const connections: Record<string, string[]> = {};
+const messages: Record<string, ChatMessage[]> = {};
+const timeOnLine: Record<string, Date> = {};
+const whiteboardData: Record<string, any[]> = {};
 
-export const connectToSocket = (server) => {
-    const io = new Server(server, {
+export const connectToSocket = (server: HTTPServer): SocketIOServer => {
+    const io = new SocketIOServer(server, {
         cors: {
             origin: "*",
             methods: ["GET", "POST"],
@@ -16,7 +25,7 @@ export const connectToSocket = (server) => {
     });
 
     // Strips full URLs down to just "/apm-room-id" so phones and laptops match
-    const normalizeRoom = (path) => {
+    const normalizeRoom = (path: string | undefined): string => {
         if (!path) return "/default";
         try {
             if (typeof path === "string" && path.includes("://")) {
@@ -26,11 +35,11 @@ export const connectToSocket = (server) => {
         return typeof path === "string" && path.startsWith("/") ? path : "/" + path;
     };
 
-    io.on("connection", (socket) => {
+    io.on("connection", (socket: Socket) => {
         console.log("Client connected:", socket.id);
 
         // User joins a room - send them existing chat & whiteboard history
-        socket.on("join-call", (rawPath) => {
+        socket.on("join-call", (rawPath: string) => {
             const path = normalizeRoom(rawPath);
             console.log(`Socket ${socket.id} joined room: ${path}`);
 
@@ -57,14 +66,14 @@ export const connectToSocket = (server) => {
         });
 
         // Relays WebRTC signaling (offers, answers, ICE candidates) between peers
-        socket.on("signal", (toId, message) => {
+        socket.on("signal", (toId: string, message: any) => {
             io.to(toId).emit("signal", socket.id, message);
         });
 
         // Broadcasts a chat message with unique ID and timestamp to the room
-        socket.on("chat-message", (data, sender) => {
+        socket.on("chat-message", (data: string, sender: string) => {
             const [matchingRoom, found] = Object.entries(connections)
-                .reduce(([room, isFound], [roomKey, roomValue]) => {
+                .reduce<[string, boolean]>(([room, isFound], [roomKey, roomValue]) => {
                     if (!isFound && roomValue.includes(socket.id)) {
                         return [roomKey, true];
                     }
@@ -76,7 +85,7 @@ export const connectToSocket = (server) => {
                     messages[matchingRoom] = [];
                 }
 
-                const msgObj = {
+                const msgObj: ChatMessage = {
                     id: `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
                     sender: sender,
                     data: data,
@@ -94,9 +103,9 @@ export const connectToSocket = (server) => {
         });
 
         // Saves a drawing stroke and forwards it to others in the room
-        socket.on("whiteboard-draw", (strokeData) => {
+        socket.on("whiteboard-draw", (strokeData: any) => {
             const [matchingRoom, found] = Object.entries(connections)
-                .reduce(([room, isFound], [roomKey, roomValue]) => {
+                .reduce<[string, boolean]>(([room, isFound], [roomKey, roomValue]) => {
                     if (!isFound && roomValue.includes(socket.id)) {
                         return [roomKey, true];
                     }
@@ -126,7 +135,7 @@ export const connectToSocket = (server) => {
         // Clears the room's whiteboard for everyone
         socket.on("whiteboard-clear", () => {
             const [matchingRoom, found] = Object.entries(connections)
-                .reduce(([room, isFound], [roomKey, roomValue]) => {
+                .reduce<[string, boolean]>(([room, isFound], [roomKey, roomValue]) => {
                     if (!isFound && roomValue.includes(socket.id)) {
                         return [roomKey, true];
                     }
@@ -144,7 +153,7 @@ export const connectToSocket = (server) => {
         // Sends the complete drawing history to a user who just opened the board
         socket.on("whiteboard-get-history", () => {
             const [matchingRoom, found] = Object.entries(connections)
-                .reduce(([room, isFound], [roomKey, roomValue]) => {
+                .reduce<[string, boolean]>(([room, isFound], [roomKey, roomValue]) => {
                     if (!isFound && roomValue.includes(socket.id)) {
                         return [roomKey, true];
                     }
@@ -157,9 +166,9 @@ export const connectToSocket = (server) => {
         });
 
         // Alerts other participants with a popup when someone starts drawing
-        socket.on("whiteboard-started", (sender) => {
+        socket.on("whiteboard-started", (sender?: string) => {
             const [matchingRoom, found] = Object.entries(connections)
-                .reduce(([room, isFound], [roomKey, roomValue]) => {
+                .reduce<[string, boolean]>(([room, isFound], [roomKey, roomValue]) => {
                     if (!isFound && roomValue.includes(socket.id)) {
                         return [roomKey, true];
                     }

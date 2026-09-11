@@ -1,29 +1,28 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, FormEvent } from "react";
 import withAuth from "../utils/withAuth";
 import { useNavigate } from "react-router-dom";
-import { IconButton, TextField, Button } from "@mui/material";
+import { TextField } from "@mui/material";
 import RestoreIcon from '@mui/icons-material/Restore';
 import LogoutIcon from '@mui/icons-material/Logout';
 import VideocamIcon from '@mui/icons-material/Videocam';
-import VideoCallIcon from '@mui/icons-material/VideoCall';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import "../styles/Home.css";
 import { AuthContext } from "../context/AuthContext";
 import Footer from "../components/Footer";
 
-function Home() {
+function Home(): React.JSX.Element {
     const navigate = useNavigate();
-    const [meetingCode, setMeetingCode] = useState("");
+    const [meetingCode, setMeetingCode] = useState<string>("");
     const { addToUserHistory } = useContext(AuthContext);
 
-    const generateMeetingCode = () => {
+    const generateMeetingCode = (): string => {
         return `apm-${Math.random().toString(36).substring(2, 6)}-${Math.random()
             .toString(36)
             .substring(2, 6)}`;
     };
 
-    const handleJoinVideoCall = async (codeToJoin) => {
+    const handleJoinVideoCall = async (codeToJoin?: string): Promise<void> => {
         const targetCode = codeToJoin || meetingCode;
         if (!targetCode) return;
         try {
@@ -34,18 +33,18 @@ function Home() {
         navigate(`/${targetCode}`);
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
         if (!meetingCode.trim()) return;
         await handleJoinVideoCall(meetingCode.trim());
     };
 
-    const handleInstantMeeting = async () => {
+    const handleInstantMeeting = async (): Promise<void> => {
         const newCode = generateMeetingCode();
         await handleJoinVideoCall(newCode);
     };
 
-    const handleLogout = () => {
+    const handleLogout = (): void => {
         localStorage.removeItem("token");
         navigate("/auth");
     };
@@ -72,6 +71,8 @@ function Home() {
                         <button 
                             className="homeGlassBtn"
                             onClick={() => navigate("/history")}
+                            title="Meeting History"
+                            aria-label="Meeting History"
                         >
                             <RestoreIcon style={{ fontSize: 20 }} />
                             <span>History</span>
@@ -79,6 +80,8 @@ function Home() {
                         <button 
                             className="homeLogoutBtn"
                             onClick={handleLogout}
+                            title="Sign Out"
+                            aria-label="Sign Out"
                         >
                             <LogoutIcon style={{ fontSize: 18 }} />
                             <span>Logout</span>

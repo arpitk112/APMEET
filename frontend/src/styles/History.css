@@ -363,3 +363,31 @@
         grid-template-columns: 1fr;
     }
 }
+
+@media (max-width: 580px) {
+    .historyNav {
+        padding: 0.75rem 1rem;
+    }
+
+    .historyNavLeft {
+        gap: 0.75rem;
+    }
+
+    .historyBackBtn {
+        padding: 0.5rem 0.85rem;
+        font-size: 0.82rem;
+    }
+
+    .historyLogoIcon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .historyBrand h2 {
+        font-size: 1.15rem;
+    }
+
+    .historyContent {
+        padding: 0.75rem 1rem 2.5rem 1rem;
+    }
+}

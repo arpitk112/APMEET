@@ -9,7 +9,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import UndoIcon from "@mui/icons-material/Undo";
 
 // Neon colors matching the dark glass theme
-const COLOR_PALETTE = [
+const COLOR_PALETTE: string[] = [
     "#ffffff", // White
     "#06b6d4", // Cyan
     "#f97316", // Orange
@@ -20,7 +20,7 @@ const COLOR_PALETTE = [
 ];
 
 // Brush sizes: fine, medium, bold
-const BRUSH_SIZES = [
+const BRUSH_SIZES: { label: string; value: number }[] = [
     { label: "Fine", value: 3 },
     { label: "Medium", value: 6 },
     { label: "Bold", value: 12 },
@@ -30,20 +30,38 @@ const BRUSH_SIZES = [
 const VIRTUAL_WIDTH = 1920;
 const VIRTUAL_HEIGHT = 1080;
 
-export default function Whiteboard({ socketRef, isOpen, username, onClose }) {
-    const canvasRef = useRef(null);
-    const strokesRef = useRef([]); // All strokes drawn so far (for undo/sync)
-    const isDrawingRef = useRef(false);
-    const startPosRef = useRef({ x: 0, y: 0 }); // Mouse/touch start position
-    const snapshotRef = useRef(null); // Canvas screenshot for line/rect preview
-    const hasNotifiedRef = useRef(false); // Only notify room once per session
+export interface Stroke {
+    type?: string;
+    prevX: number;
+    prevY: number;
+    currX: number;
+    currY: number;
+    color: string;
+    size: number;
+    tool: string;
+}
 
-    const [color, setColor] = useState("#f97316");
-    const [brushSize, setBrushSize] = useState(4);
-    const [activeTool, setActiveTool] = useState("pen"); // 'pen' | 'eraser' | 'line' | 'rect'
+interface WhiteboardProps {
+    socketRef: React.MutableRefObject<any>;
+    isOpen: boolean;
+    username?: string;
+    onClose: () => void;
+}
+
+export default function Whiteboard({ socketRef, isOpen, username, onClose }: WhiteboardProps): React.JSX.Element {
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const strokesRef = useRef<Stroke[]>([]); // All strokes drawn so far (for undo/sync)
+    const isDrawingRef = useRef<boolean>(false);
+    const startPosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 }); // Mouse/touch start position
+    const snapshotRef = useRef<ImageData | null>(null); // Canvas screenshot for line/rect preview
+    const hasNotifiedRef = useRef<boolean>(false); // Only notify room once per session
+
+    const [color, setColor] = useState<string>("#f97316");
+    const [brushSize, setBrushSize] = useState<number>(4);
+    const [activeTool, setActiveTool] = useState<string>("pen"); // 'pen' | 'eraser' | 'line' | 'rect'
 
     // Draws a single stroke or shape using normalized 0-1 coordinates
-    const drawStroke = useCallback((stroke) => {
+    const drawStroke = useCallback((stroke: Stroke) => {
         const canvas = canvasRef.current;
         if (!canvas) return;
         const ctx = canvas.getContext("2d");
@@ -113,7 +131,7 @@ export default function Whiteboard({ socketRef, isOpen, username, onClose }) {
         const socket = socketRef?.current;
         if (!socket) return;
 
-        const handleRemoteDraw = (stroke) => {
+        const handleRemoteDraw = (stroke: Stroke) => {
             strokesRef.current.push(stroke);
             drawStroke(stroke);
         };
@@ -127,7 +145,7 @@ export default function Whiteboard({ socketRef, isOpen, username, onClose }) {
             }
         };
 
-        const handleRemoteHistory = (history) => {
+        const handleRemoteHistory = (history: Stroke[]) => {
             if (Array.isArray(history)) {
                 strokesRef.current = history;
                 redrawAll();
@@ -164,19 +182,13 @@ export default function Whiteboard({ socketRef, isOpen, username, onClose }) {
     }, [isOpen, redrawAll, socketRef]);
 
     // Turns mouse/touch pixel coordinates into 0.0 to 1.0 percentages
-    const getNormalizedCoords = (e) => {
+    const getNormalizedCoords = (e: React.PointerEvent<HTMLCanvasElement>) => {
         const canvas = canvasRef.current;
         if (!canvas) return { x: 0, y: 0 };
         const rect = canvas.getBoundingClientRect();
 
-        let clientX = e.clientX;
-        let clientY = e.clientY;
-
-        // Support mobile touch events
-        if ((clientX === undefined || clientY === undefined) && e.touches && e.touches.length > 0) {
-            clientX = e.touches[0].clientX;
-            clientY = e.touches[0].clientY;
-        }
+        const clientX = e.clientX;
+        const clientY = e.clientY;
 
         // Keep values between 0 and 1 so strokes don't go outside canvas
         const x = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
@@ -186,7 +198,7 @@ export default function Whiteboard({ socketRef, isOpen, username, onClose }) {
     };
 
     // Starts a stroke when pointer/finger touches down
-    const startDrawing = (e) => {
+    const startDrawing = (e: React.PointerEvent<HTMLCanvasElement>) => {
         e.preventDefault();
         const coords = getNormalizedCoords(e);
         isDrawingRef.current = true;
@@ -209,7 +221,7 @@ export default function Whiteboard({ socketRef, isOpen, username, onClose }) {
     };
 
     // Draws while dragging mouse or finger
-    const draw = (e) => {
+    const draw = (e: React.PointerEvent<HTMLCanvasElement>) => {
         if (!isDrawingRef.current) return;
         e.preventDefault();
 
@@ -221,7 +233,7 @@ export default function Whiteboard({ socketRef, isOpen, username, onClose }) {
         const coords = getNormalizedCoords(e);
 
         if (activeTool === "pen" || activeTool === "eraser") {
-            const stroke = {
+            const stroke: Stroke = {
                 type: "freehand",
                 prevX: startPosRef.current.x,
                 prevY: startPosRef.current.y,
@@ -268,14 +280,14 @@ export default function Whiteboard({ socketRef, isOpen, username, onClose }) {
     };
 
     // Finishes stroke on release and broadcasts final shape
-    const stopDrawing = (e) => {
+    const stopDrawing = (e: React.PointerEvent<HTMLCanvasElement>) => {
         if (!isDrawingRef.current) return;
         isDrawingRef.current = false;
 
         const coords = getNormalizedCoords(e);
 
         if (activeTool === "line" || activeTool === "rect") {
-            const stroke = {
+            const stroke: Stroke = {
                 type: activeTool,
                 prevX: startPosRef.current.x,
                 prevY: startPosRef.current.y,
@@ -320,6 +332,7 @@ export default function Whiteboard({ socketRef, isOpen, username, onClose }) {
         exportCanvas.width = VIRTUAL_WIDTH;
         exportCanvas.height = VIRTUAL_HEIGHT;
         const exportCtx = exportCanvas.getContext("2d");
+        if (!exportCtx) return;
 
         exportCtx.fillStyle = "#0c1020";
         exportCtx.fillRect(0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, FormEvent } from 'react';
 import {
     Button,
     CssBaseline,
@@ -13,7 +13,7 @@ import BoltIcon from '@mui/icons-material/Bolt';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
+import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 import { AuthContext } from '../context/AuthContext';
 
 // Glassmorphism theme using the custom color palette (#141619, #2C2E3A, #050A44, #0A21C0, #B3B4BD)
@@ -39,24 +39,22 @@ const glassTheme = createTheme({
     },
 });
 
-export default function Authentication() {
-    const [quickCode, setQuickCode] = useState('');
-    const [error, setError] = useState('');
-    const [message, setMessage] = useState('');
-    const [open, setOpen] = useState(false);
+export default function Authentication(): React.JSX.Element {
+    const [quickCode, setQuickCode] = useState<string>('');
+    const [error, setError] = useState<string>('');
 
     const navigate = useNavigate();
     const { handleGoogleAuth } = useContext(AuthContext);
 
     // Generates a random room code for instant guest meetings
-    const generateCode = () => {
+    const generateCode = (): string => {
         return `apm-${Math.random().toString(36).substring(2, 6)}-${Math.random()
             .toString(36)
             .substring(2, 6)}`;
     };
 
     // Google Sign-In success handler
-    const onGoogleSuccess = async (credentialResponse) => {
+    const onGoogleSuccess = async (credentialResponse: CredentialResponse): Promise<void> => {
         try {
             setError("");
             if (credentialResponse?.credential) {
@@ -64,20 +62,20 @@ export default function Authentication() {
             } else {
                 setError("No credential returned from Google.");
             }
-        } catch (err) {
+        } catch (err: any) {
             const errorMsg = err?.response?.data?.message || err?.message || "Google Authentication failed.";
             setError(errorMsg);
         }
     };
 
     // Handles instant call start without requiring login
-    const handleStartInstantCall = () => {
+    const handleStartInstantCall = (): void => {
         const code = generateCode();
         navigate(`/${code}`);
     };
 
     // Handles joining an existing meeting without login
-    const handleJoinQuickCall = (e) => {
+    const handleJoinQuickCall = (e: FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         if (!quickCode.trim()) {
             setError("Please enter a meeting code");
@@ -194,7 +192,6 @@ export default function Authentication() {
                                 background: 'linear-gradient(135deg, #0A21C0, #1A34E8)',
                                 display: 'flex',
                                 alignItems: 'center',
-                                justifyCenter: 'center',
                                 justifyContent: 'center',
                                 boxShadow: '0 4px 18px rgba(10, 33, 192, 0.45)',
                             }}

@@ -3,7 +3,6 @@ import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import { IconButton } from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
@@ -14,12 +13,18 @@ import VideocamIcon from '@mui/icons-material/Videocam';
 import "../styles/History.css";
 import Footer from "../components/Footer";
 
-export default function History() {
+export interface MeetingRecord {
+    meetingCode: string;
+    date: string | Date;
+    [key: string]: any;
+}
+
+export default function History(): React.JSX.Element {
     const { getHistoryOfUser, deleteFromHistory } = useContext(AuthContext);
-    const [meetings, setMeetings] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [toastMessage, setToastMessage] = useState("");
-    const [openToast, setOpenToast] = useState(false);
+    const [meetings, setMeetings] = useState<MeetingRecord[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [toastMessage, setToastMessage] = useState<string>("");
+    const [openToast, setOpenToast] = useState<boolean>(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -39,7 +44,7 @@ export default function History() {
         fetchHistory();
     }, []);
 
-    const handleDelete = async (meetingCode) => {
+    const handleDelete = async (meetingCode: string): Promise<void> => {
         try {
             await deleteFromHistory(meetingCode);
             setMeetings(prev => prev.filter(m => m.meetingCode !== meetingCode));
@@ -51,17 +56,17 @@ export default function History() {
         }
     };
 
-    const handleCopyCode = (code) => {
+    const handleCopyCode = (code: string): void => {
         navigator.clipboard.writeText(code);
         setToastMessage(`Copied "${code}" to clipboard!`);
         setOpenToast(true);
     };
 
-    const handleRejoin = (meetingCode) => {
+    const handleRejoin = (meetingCode: string): void => {
         navigate(`/${meetingCode}`);
     };
 
-    const formatDate = (dateString) => {
+    const formatDate = (dateString: string | Date): string => {
         try {
             const date = new Date(dateString);
             return date.toLocaleDateString("en-US", {
@@ -72,7 +77,7 @@ export default function History() {
                 minute: "2-digit",
             });
         } catch (e) {
-            return dateString;
+            return String(dateString);
         }
     };
 
