@@ -26,7 +26,11 @@ function Home() {
     const handleJoinVideoCall = async (codeToJoin) => {
         const targetCode = codeToJoin || meetingCode;
         if (!targetCode) return;
-        await addToUserHistory(targetCode);
+        try {
+            await addToUserHistory(targetCode);
+        } catch (e) {
+            console.log("Could not sync to history:", e);
+        }
         navigate(`/${targetCode}`);
     };
 

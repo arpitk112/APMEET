@@ -84,16 +84,18 @@ export default function History() {
 
             {/* Header */}
             <header className="historyNav">
-                <button className="historyBackBtn" onClick={() => navigate("/home")}>
-                    <ArrowBackIcon style={{ fontSize: 20 }} />
-                    <span>Back to Dashboard</span>
-                </button>
+                <div className="historyNavLeft">
+                    <button className="historyBackBtn" onClick={() => navigate("/home")}>
+                        <ArrowBackIcon style={{ fontSize: 20 }} />
+                        <span>Back to Dashboard</span>
+                    </button>
 
-                <div className="historyBrand" onClick={() => navigate('/home')}>
-                    <div className="historyLogoIcon">
-                        <VideocamIcon style={{ fontSize: 22, color: '#fff' }} />
+                    <div className="historyBrand" onClick={() => navigate('/home')}>
+                        <div className="historyLogoIcon">
+                            <VideocamIcon style={{ fontSize: 22, color: '#fff' }} />
+                        </div>
+                        <h2>Meeting <span>History</span></h2>
                     </div>
-                    <h2>Meeting <span>History</span></h2>
                 </div>
             </header>
 

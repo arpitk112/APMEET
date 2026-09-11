@@ -43,12 +43,17 @@
     position: sticky;
     top: 0;
     z-index: 40;
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 1.5rem 2.5rem;
+    width: 100%;
+    padding: 1.5rem 3rem;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: flex-start;
+}
+
+.historyNavLeft {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
 }
 
 .historyBackBtn {
@@ -109,9 +114,7 @@
     z-index: 10;
     flex: 1 0 auto;
     width: 100%;
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 1.5rem 2.5rem 3.5rem 2.5rem;
+    padding: 1rem 3rem 3.5rem 3rem;
     display: flex;
     flex-direction: column;
 }

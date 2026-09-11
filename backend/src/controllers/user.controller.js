@@ -134,18 +134,18 @@ const getUserHistory = async (req, res) => {
     const { token } = req.query;
 
     if (!token) {
-        return res.status(httpStatus.UNAUTHORIZED).json({ message: "Token is required" });
+        return res.status(httpStatus.OK).json([]);
     }
 
     try {
         const user = await User.findOne({ token: token });
         if (!user) {
-            return res.status(httpStatus.UNAUTHORIZED).json({ message: "Invalid session token" });
+            return res.status(httpStatus.OK).json([]);
         }
         const meetings = await Meeting.find({ user_id: user.username, isDelete: false }).sort({ date: -1 });
         return res.status(httpStatus.OK).json(meetings);
     } catch (e) {
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: `Failed to fetch history: ${e.message}` });
+        return res.status(httpStatus.OK).json([]);
     }
 };
 
@@ -153,14 +153,18 @@ const getUserHistory = async (req, res) => {
 const addToHistory = async (req, res) => {
     const { token, meeting_code } = req.body;
 
-    if (!token || !meeting_code) {
-        return res.status(httpStatus.BAD_REQUEST).json({ message: "Token and meeting code are required" });
+    if (!meeting_code) {
+        return res.status(httpStatus.BAD_REQUEST).json({ message: "Meeting code is required" });
     }
 
     try {
+        if (!token) {
+            return res.status(httpStatus.OK).json({ message: "Guest meeting created" });
+        }
+
         const user = await User.findOne({ token: token });
         if (!user) {
-            return res.status(httpStatus.UNAUTHORIZED).json({ message: "Invalid session token" });
+            return res.status(httpStatus.OK).json({ message: "Session expired or guest, meeting not tracked" });
         }
 
         let existingMeeting = await Meeting.findOne({
@@ -185,7 +189,7 @@ const addToHistory = async (req, res) => {
         await newMeeting.save();
         return res.status(httpStatus.CREATED).json({ message: "Meeting added to history", meeting: newMeeting });
     } catch (e) {
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: `Failed to add history: ${e.message}` });
+        return res.status(httpStatus.OK).json({ message: "Meeting created without history tracking" });
     }
 };
 
