@@ -129,36 +129,65 @@ const register = async (req, res) => {
     }
 }
 
+// Returns the user's meeting history sorted newest first
 const getUserHistory = async (req, res) => {
     const { token } = req.query;
 
+    if (!token) {
+        return res.status(httpStatus.UNAUTHORIZED).json({ message: "Token is required" });
+    }
+
     try {
         const user = await User.findOne({ token: token });
-        const meetings = await Meeting.find({ user_id: user.username, isDelete: false })
-        res.json(meetings);
+        if (!user) {
+            return res.status(httpStatus.UNAUTHORIZED).json({ message: "Invalid session token" });
+        }
+        const meetings = await Meeting.find({ user_id: user.username, isDelete: false }).sort({ date: -1 });
+        return res.status(httpStatus.OK).json(meetings);
     } catch (e) {
-        res.json({ message: `Something went wrong ${e}` })
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: `Failed to fetch history: ${e.message}` });
     }
-}
+};
 
+// Saves a meeting code to history, or bumps timestamp if already visited
 const addToHistory = async (req, res) => {
     const { token, meeting_code } = req.body;
 
+    if (!token || !meeting_code) {
+        return res.status(httpStatus.BAD_REQUEST).json({ message: "Token and meeting code are required" });
+    }
+
     try {
         const user = await User.findOne({ token: token });
+        if (!user) {
+            return res.status(httpStatus.UNAUTHORIZED).json({ message: "Invalid session token" });
+        }
+
+        let existingMeeting = await Meeting.findOne({
+            user_id: user.username,
+            meetingCode: meeting_code
+        });
+
+        if (existingMeeting) {
+            existingMeeting.date = new Date();
+            existingMeeting.isDelete = false;
+            await existingMeeting.save();
+            return res.status(httpStatus.OK).json({ message: "Meeting history updated", meeting: existingMeeting });
+        }
 
         const newMeeting = new Meeting({
             user_id: user.username,
-            meetingCode: meeting_code
-        })
+            meetingCode: meeting_code,
+            date: new Date(),
+            isDelete: false
+        });
 
         await newMeeting.save();
-        res.status(httpStatus.CREATED).json({ message: "Added code to the history" });
+        return res.status(httpStatus.CREATED).json({ message: "Meeting added to history", meeting: newMeeting });
     } catch (e) {
-        res.json({ message: `Something went wrong ${e}` })
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: `Failed to add history: ${e.message}` });
     }
-
-}
+};
 
 // Delete user history
 const deleteUserHistory = async (req, res) => {

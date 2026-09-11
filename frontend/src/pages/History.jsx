@@ -17,6 +17,7 @@ import Footer from "../components/Footer";
 export default function History() {
     const { getHistoryOfUser, deleteFromHistory } = useContext(AuthContext);
     const [meetings, setMeetings] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [toastMessage, setToastMessage] = useState("");
     const [openToast, setOpenToast] = useState(false);
     const navigate = useNavigate();
@@ -31,6 +32,8 @@ export default function History() {
             } catch (e) {
                 setToastMessage("Failed to fetch meeting history");
                 setOpenToast(true);
+            } finally {
+                setLoading(false);
             }
         };
         fetchHistory();
@@ -96,7 +99,12 @@ export default function History() {
 
             {/* Main Content */}
             <main className="historyContent">
-                {meetings.length > 0 ? (
+                {loading ? (
+                    <div className="historyLoadingState">
+                        <div className="historySpinner"></div>
+                        <p>Loading your meeting history...</p>
+                    </div>
+                ) : meetings.length > 0 ? (
                     <div className="historyGrid">
                         {meetings.map((meeting, i) => (
                             <div key={i} className="glassHistoryCard">

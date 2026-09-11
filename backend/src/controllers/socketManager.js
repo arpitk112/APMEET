@@ -45,16 +45,9 @@ export const connectToSocket = (server) => {
                 io.to(connections[path][a]).emit("user-joined", socket.id, connections[path]);
             }
 
-            // Replay past chat messages
-            if (messages[path] !== undefined) {
-                for (let a = 0; a < messages[path].length; ++a) {
-                    io.to(socket.id).emit(
-                        "chat-message",
-                        messages[path][a]['data'],
-                        messages[path][a]["sender"],
-                        messages[path][a]["socket-id-sender"]
-                    );
-                }
+            // Send existing chat history to the newly connected participant
+            if (messages[path] !== undefined && messages[path].length > 0) {
+                io.to(socket.id).emit("chat-history", messages[path]);
             }
 
             // Replay past whiteboard strokes
@@ -68,7 +61,7 @@ export const connectToSocket = (server) => {
             io.to(toId).emit("signal", socket.id, message);
         });
 
-        // Broadcasts a chat message to everyone in the same room
+        // Broadcasts a chat message with unique ID and timestamp to the room
         socket.on("chat-message", (data, sender) => {
             const [matchingRoom, found] = Object.entries(connections)
                 .reduce(([room, isFound], [roomKey, roomValue]) => {
@@ -83,11 +76,19 @@ export const connectToSocket = (server) => {
                     messages[matchingRoom] = [];
                 }
 
-                messages[matchingRoom].push({ 'sender': sender, "data": data, "socket-id-sender": socket.id });
+                const msgObj = {
+                    id: `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+                    sender: sender,
+                    data: data,
+                    "socket-id-sender": socket.id,
+                    timestamp: new Date().toISOString()
+                };
+
+                messages[matchingRoom].push(msgObj);
                 console.log("message in", matchingRoom, ":", sender, data);
 
                 connections[matchingRoom].forEach((elem) => {
-                    io.to(elem).emit('chat-message', data, sender, socket.id);
+                    io.to(elem).emit('chat-message', data, sender, socket.id, msgObj.id, msgObj.timestamp);
                 });
             }
         });

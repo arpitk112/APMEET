@@ -1,5 +1,6 @@
 // Main video meeting component: manages WebRTC peer connections, socket events, and whiteboard
 import React, { useEffect, useRef, useState } from "react";
+import axios from "axios";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import styles from "../styles/VideoComponent.module.css"
@@ -106,6 +107,13 @@ export default function VideoMeetComponent() {
 
     useEffect(() => {
         getPermissions();
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            try {
+                const parsed = JSON.parse(storedUser);
+                if (parsed.name) setUsername(parsed.name);
+            } catch (e) { }
+        }
     }, [])
 
     let getUserMediaSuccess = (stream) => {
@@ -236,13 +244,35 @@ export default function VideoMeetComponent() {
         }
     }
 
-    let addMessage = (data, sender, socketIdSender) => {
-        setMessages((prevMessages) => [
-            ...prevMessages, { sender: sender, data: data }
-        ]);
+    // Appends message if not already present to ensure chat stays strictly in sync
+    let addMessage = (data, sender, socketIdSender, id, timestamp) => {
+        const msgId = id || `${sender}-${data}-${Date.now()}`;
+        setMessages((prevMessages) => {
+            const exists = prevMessages.some(m =>
+                (m.id && m.id === msgId) ||
+                (m.sender === sender && m.data === data && (!timestamp || Math.abs(new Date(m.timestamp || 0) - new Date(timestamp || 0)) < 1500))
+            );
+            if (exists) return prevMessages;
+
+            return [
+                ...prevMessages, { id: msgId, sender: sender, data: data, timestamp: timestamp || new Date().toISOString() }
+            ];
+        });
 
         if (socketIdSender !== socketIdRef.current) {
             setNewMessages((prevMessages) => prevMessages + 1);
+        }
+    }
+
+    // Loads complete room chat history when joining or reconnecting
+    let handleChatHistory = (history) => {
+        if (Array.isArray(history)) {
+            setMessages(history.map(item => ({
+                id: item.id || `${item.sender}-${item.data}-${Math.random()}`,
+                sender: item.sender,
+                data: item.data,
+                timestamp: item.timestamp || new Date().toISOString()
+            })));
         }
     }
 
@@ -252,16 +282,18 @@ export default function VideoMeetComponent() {
 
         socketRef.current.on('signal', gotMessageFromServer)
 
+        // Detach previous listeners before attaching to prevent duplicates on reconnect
+        socketRef.current.off("chat-history").on("chat-history", handleChatHistory);
+        socketRef.current.off("chat-message").on("chat-message", addMessage);
+
         socketRef.current.on("connect", () => {
             // Join room using pathname so localhost and LAN mobile IP land in the same room
             socketRef.current.emit("join-call", window.location.pathname)
 
             socketIdRef.current = socketRef.current.id;
 
-            socketRef.current.on("chat-message", addMessage)
-
             // Popup alert when someone starts using the whiteboard
-            socketRef.current.on("whiteboard-started", (senderName) => {
+            socketRef.current.off("whiteboard-started").on("whiteboard-started", (senderName) => {
                 setWhiteboardNotification({
                     open: true,
                     sender: senderName || "A participant",
@@ -270,7 +302,7 @@ export default function VideoMeetComponent() {
             });
 
             // Remove participant video and close connection when they leave
-            socketRef.current.on("user-left", (id) => {
+            socketRef.current.off("user-left").on("user-left", (id) => {
                 setVideos((videos) => videos.filter((video) => video.socketId !== id));
                 videoRef.current = videoRef.current.filter((video) => video.socketId !== id);
                 if (connections[id]) {
@@ -280,7 +312,7 @@ export default function VideoMeetComponent() {
             })
 
             // Set up WebRTC connection whenever a new user joins
-            socketRef.current.on("user-joined", (id, clients) => {
+            socketRef.current.off("user-joined").on("user-joined", (id, clients) => {
                 clients.forEach((socketListId) => {
                     connections[socketListId] = new RTCPeerConnection(peerConfigConnections);
 
@@ -361,6 +393,15 @@ export default function VideoMeetComponent() {
         if (!username.trim()) return;
         setAskForUsername(false);
         getMedia();
+
+        const token = localStorage.getItem("token");
+        const roomCode = window.location.pathname.replace(/^\/+/, "");
+        if (token && roomCode) {
+            axios.post(`${server_url}/api/v1/users/add_to_activity`, {
+                token,
+                meeting_code: roomCode
+            }).catch(e => console.log("History sync error:", e));
+        }
     }
 
     let handleVideo = () => {
@@ -594,7 +635,7 @@ export default function VideoMeetComponent() {
                                 {messages.length > 0 ? messages.map((item, index) => {
                                     return (
                                         <div
-                                            key={index}
+                                            key={item.id || index}
                                             className={`${styles.chatMessage} ${item.sender === username ? styles.myMessage : styles.otherMessage
                                                 }`}
                                         >
