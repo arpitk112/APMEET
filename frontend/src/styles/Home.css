@@ -6,7 +6,7 @@
     position: relative;
     min-height: 100vh;
     width: 100%;
-    background: radial-gradient(circle at 70% 20%, #151a30 0%, #0a0d18 75%);
+    background: radial-gradient(circle at 70% 20%, #050a44 0%, #141619 75%);
     color: #ffffff;
     overflow-x: hidden;
     display: flex;
@@ -39,7 +39,7 @@
 .homeGlow1 {
     width: 450px;
     height: 450px;
-    background: rgba(99, 102, 241, 0.14);
+    background: rgba(10, 33, 192, 0.2);
     top: 50px;
     left: -50px;
 }
@@ -47,7 +47,7 @@
 .homeGlow2 {
     width: 500px;
     height: 500px;
-    background: rgba(249, 115, 22, 0.10);
+    background: rgba(5, 10, 68, 0.35);
     bottom: 0;
     right: 5%;
 }
@@ -68,12 +68,12 @@
     justify-content: space-between;
     align-items: center;
     padding: 0.85rem 1.6rem;
-    background: rgba(15, 23, 42, 0.65);
+    background: rgba(44, 46, 58, 0.65);
     backdrop-filter: blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(179, 180, 189, 0.16);
     border-radius: 20px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
 }
 
 .homeBrand {
@@ -89,9 +89,9 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    background: linear-gradient(135deg, #f97316, #ec4899);
+    background: linear-gradient(135deg, #0A21C0, #1A34E8);
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.35);
+    box-shadow: 0 4px 18px rgba(10, 33, 192, 0.45);
 }
 
 .homeBrand h3 {
@@ -102,7 +102,7 @@
 }
 
 .homeBrand h3 span {
-    color: #f97316;
+    color: #0A21C0;
 }
 
 .homeNavActions {
@@ -115,9 +115,9 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: #cbd5e1;
+    background: rgba(44, 46, 58, 0.5);
+    border: 1px solid rgba(179, 180, 189, 0.16);
+    color: #B3B4BD;
     padding: 0.55rem 1.15rem;
     border-radius: 12px;
     font-size: 0.9rem;
@@ -128,8 +128,8 @@
 }
 
 .homeGlassBtn:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.25);
+    background: rgba(44, 46, 58, 0.85);
+    border-color: rgba(179, 180, 189, 0.35);
     color: #ffffff;
     transform: translateY(-2px);
 }
@@ -174,10 +174,10 @@
 
 /* Frosted Glass Join Card */
 .homeGlassCard {
-    background: rgba(15, 23, 42, 0.65);
+    background: rgba(44, 46, 58, 0.65);
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(179, 180, 189, 0.16);
     border-radius: 28px;
     padding: 3rem;
     box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.5);
@@ -217,13 +217,13 @@
 }
 
 .homeGradientText {
-    background: linear-gradient(135deg, #f97316 0%, #ec4899 100%);
+    background: linear-gradient(135deg, #0A21C0 0%, #1A34E8 50%, #60A5FA 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .cardSubtitle {
-    color: #94a3b8;
+    color: #B3B4BD;
     font-size: 1rem;
     line-height: 1.6;
 }
@@ -241,7 +241,7 @@
 
 /* Glass Material Input Overrides */
 .glassTextField .MuiOutlinedInput-root {
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(44, 46, 58, 0.5);
     backdrop-filter: blur(8px);
     border-radius: 14px;
     color: #ffffff;
@@ -249,32 +249,32 @@
 }
 
 .glassTextField .MuiOutlinedInput-notchedOutline {
-    border-color: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(179, 180, 189, 0.2) !important;
 }
 
 .glassTextField .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-    border-color: rgba(255, 255, 255, 0.3) !important;
+    border-color: rgba(179, 180, 189, 0.4) !important;
 }
 
 .glassTextField .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: #f97316 !important;
+    border-color: #0A21C0 !important;
     border-width: 1.5px;
-    box-shadow: 0 0 12px rgba(249, 115, 22, 0.3);
+    box-shadow: 0 0 12px rgba(10, 33, 192, 0.4);
 }
 
 .glassTextField .MuiInputLabel-root {
-    color: #94a3b8 !important;
+    color: #B3B4BD !important;
 }
 
 .glassTextField .MuiInputLabel-root.Mui-focused {
-    color: #f97316 !important;
+    color: #0A21C0 !important;
 }
 
 .joinPrimaryBtn {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    background: linear-gradient(135deg, #0A21C0 0%, #1A34E8 100%);
     border: none;
     color: #ffffff;
     padding: 0 1.6rem;
@@ -284,13 +284,13 @@
     font-family: inherit;
     cursor: pointer;
     transition: all 0.25s ease;
-    box-shadow: 0 8px 20px rgba(249, 115, 22, 0.35);
+    box-shadow: 0 8px 20px rgba(10, 33, 192, 0.4);
     white-space: nowrap;
 }
 
 .joinPrimaryBtn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(249, 115, 22, 0.5);
+    box-shadow: 0 10px 25px rgba(10, 33, 192, 0.6);
     filter: brightness(1.1);
 }
 
@@ -311,12 +311,12 @@
 .orDivider::after {
     content: '';
     flex: 1;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(179, 180, 189, 0.15);
 }
 
 .orDivider span {
     padding: 0 1rem;
-    color: #64748b;
+    color: #838594;
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -329,9 +329,9 @@
     align-items: center;
     justify-content: center;
     gap: 0.6rem;
-    background: rgba(99, 102, 241, 0.12);
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    color: #a5b4fc;
+    background: rgba(10, 33, 192, 0.15);
+    border: 1px solid rgba(10, 33, 192, 0.35);
+    color: #B3B4BD;
     padding: 0.9rem 1.5rem;
     border-radius: 14px;
     font-size: 0.95rem;
@@ -342,11 +342,11 @@
 }
 
 .instantMeetingBtn:hover {
-    background: rgba(99, 102, 241, 0.22);
-    border-color: rgba(99, 102, 241, 0.5);
+    background: rgba(10, 33, 192, 0.3);
+    border-color: #0A21C0;
     color: #ffffff;
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 8px 25px rgba(10, 33, 192, 0.4);
 }
 
 .quickTips {
@@ -367,7 +367,7 @@
     position: absolute;
     width: 320px;
     height: 320px;
-    background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(10, 33, 192, 0.3) 0%, transparent 70%);
     border-radius: 50%;
     filter: blur(40px);
 }

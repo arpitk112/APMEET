@@ -105,14 +105,14 @@ export default function History() {
                                         <VideoCallIcon style={{ fontSize: 22, color: '#f97316' }} />
                                     </div>
                                     <div className="cardTopActions">
-                                        <button 
+                                        <button
                                             className="iconActionBtn copyBtn"
                                             title="Copy meeting code"
                                             onClick={() => handleCopyCode(meeting.meetingCode)}
                                         >
                                             <ContentCopyIcon style={{ fontSize: 16 }} />
                                         </button>
-                                        <button 
+                                        <button
                                             className="iconActionBtn deleteBtn"
                                             title="Delete from history"
                                             onClick={() => handleDelete(meeting.meetingCode)}
@@ -125,7 +125,7 @@ export default function History() {
                                 <div className="cardBody">
                                     <span className="codeLabel">ROOM CODE</span>
                                     <h4 className="meetingCodeText">{meeting.meetingCode}</h4>
-                                    
+
                                     <div className="meetingDateBadge">
                                         <EventIcon style={{ fontSize: 14 }} />
                                         <span>{formatDate(meeting.date)}</span>
@@ -133,7 +133,7 @@ export default function History() {
                                 </div>
 
                                 <div className="cardFooter">
-                                    <button 
+                                    <button
                                         className="rejoinBtn"
                                         onClick={() => handleRejoin(meeting.meetingCode)}
                                     >

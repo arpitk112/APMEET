@@ -60,19 +60,13 @@ export default function LandingPage() {
                             className="navGlassBtn navHideMobile"
                             onClick={() => router(`/${code}`)}
                         >
-                            Join as Guest
-                        </button>
-                        <button 
-                            className="navGlassBtn"
-                            onClick={() => router("/auth")}
-                        >
-                            Register
+                            Quick Call
                         </button>
                         <button 
                             className="navPrimaryBtn"
                             onClick={handleLoginClick}
                         >
-                            Sign In
+                            Sign In with Google
                         </button>
                     </div>
                 </nav>

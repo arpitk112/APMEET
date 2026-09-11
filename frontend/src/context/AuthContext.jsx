@@ -16,9 +16,26 @@ export const AuthProvider = ({ children }) => {
 
     const [userData, setUserData] = useState(authContext);
 
-    // We will route user from here only
+    // Navigation router hook
     const router = useNavigate();
 
+    // Google OAuth login & signup handler
+    const handleGoogleAuth = async (credential) => {
+        try {
+            let request = await client.post("/google-auth", { credential });
+            if (request.status === HttpStatusCode.Ok) {
+                localStorage.setItem("token", request.data.token);
+                if (request.data.user) {
+                    setUserData(request.data.user);
+                    localStorage.setItem("user", JSON.stringify(request.data.user));
+                }
+                router("/home");
+                return request.data;
+            }
+        } catch (err) {
+            throw err;
+        }
+    };
 
     const handleLogin = async (username, password) => {
         try {
@@ -94,7 +111,7 @@ export const AuthProvider = ({ children }) => {
 
 
     const data = {
-        userData, setUserData, getHistoryOfUser, handleRegister, handleLogin, addToUserHistory, deleteFromHistory
+        userData, setUserData, getHistoryOfUser, handleRegister, handleLogin, handleGoogleAuth, addToUserHistory, deleteFromHistory
     }
 
     return (

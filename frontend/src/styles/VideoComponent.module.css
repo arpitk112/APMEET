@@ -5,8 +5,8 @@
 /* ================= Main Container ================= */
 .meetVideoContainer {
     height: 100vh;
-    width: 100vw;
-    background: radial-gradient(circle at 50% 50%, #111827 0%, #030712 100%);
+    width: 100%;
+    background: radial-gradient(circle at 50% 50%, #050a44 0%, #141619 100%);
     position: relative;
     overflow: hidden;
     display: flex;
@@ -229,7 +229,7 @@
 }
 
 .thumbnailWrapper:hover {
-    border-color: #f97316;
+    border-color: #0A21C0;
     transform: scale(1.04);
 }
 
@@ -312,10 +312,10 @@
 }
 
 .controlBtnActive {
-    background: linear-gradient(135deg, #f97316, #ea580c) !important;
+    background: linear-gradient(135deg, #0A21C0, #1A34E8) !important;
     border-color: transparent !important;
     color: #ffffff !important;
-    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4) !important;
+    box-shadow: 0 4px 15px rgba(10, 33, 192, 0.45) !important;
 }
 
 .endCallBtn {
@@ -456,9 +456,9 @@
 /* My messages (RIGHT) */
 .myMessage {
     align-self: flex-end;
-    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    background: linear-gradient(135deg, #0A21C0 0%, #1A34E8 100%);
     color: #ffffff;
-    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+    box-shadow: 0 4px 15px rgba(10, 33, 192, 0.35);
 }
 
 .myMessage .sender {
@@ -469,8 +469,8 @@
 .chattingArea {
     margin-top: auto;
     padding: 16px 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(15, 23, 42, 0.7);
+    border-top: 1px solid rgba(179, 180, 189, 0.12);
+    background: rgba(44, 46, 58, 0.75);
     backdrop-filter: blur(12px);
     display: flex;
     gap: 10px;
@@ -478,13 +478,13 @@
 }
 
 .chatSendBtn {
-    background: linear-gradient(135deg, #f97316, #ea580c) !important;
+    background: linear-gradient(135deg, #0A21C0, #1A34E8) !important;
     color: #ffffff !important;
     border-radius: 12px !important;
     padding: 8px 16px !important;
     font-weight: 600 !important;
     text-transform: none !important;
-    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.35) !important;
+    box-shadow: 0 4px 15px rgba(10, 33, 192, 0.4) !important;
 }
 
 .chatSendBtn:hover:not(:disabled) {
@@ -551,9 +551,9 @@
     justify-content: center;
     width: 44px;
     height: 44px;
-    background: linear-gradient(135deg, #f97316, #ec4899);
+    background: linear-gradient(135deg, #0A21C0, #1A34E8);
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
+    box-shadow: 0 4px 15px rgba(10, 33, 192, 0.4);
 }
 
 .lobbyCard h2 {
@@ -564,7 +564,7 @@
 }
 
 .lobbySubtitle {
-    color: #94a3b8;
+    color: #B3B4BD;
     font-size: 0.9rem;
 }
 
@@ -574,7 +574,7 @@
     border-radius: 18px;
     overflow: hidden;
     background: #000;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(179, 180, 189, 0.2);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
@@ -592,10 +592,10 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    background: rgba(15, 23, 42, 0.75);
+    background: rgba(44, 46, 58, 0.75);
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #e2e8f0;
+    border: 1px solid rgba(179, 180, 189, 0.2);
+    color: #B3B4BD;
     padding: 4px 10px;
     border-radius: 8px;
     font-size: 0.75rem;
@@ -618,20 +618,20 @@
 }
 
 .lobbyJoinBtn {
-    background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #db2777 100%) !important;
+    background: linear-gradient(135deg, #0A21C0 0%, #1A34E8 100%) !important;
     color: #ffffff !important;
     border-radius: 14px !important;
     padding: 12px 24px !important;
     font-size: 1rem !important;
     font-weight: 600 !important;
     text-transform: none !important;
-    box-shadow: 0 8px 25px rgba(249, 115, 22, 0.4) !important;
+    box-shadow: 0 8px 25px rgba(10, 33, 192, 0.4) !important;
     transition: all 0.25s ease !important;
 }
 
 .lobbyJoinBtn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(249, 115, 22, 0.55) !important;
+    box-shadow: 0 12px 30px rgba(10, 33, 192, 0.6) !important;
     filter: brightness(1.1);
 }
 
@@ -851,12 +851,12 @@
     align-items: center;
     gap: 14px;
     padding: 12px 18px;
-    background: rgba(15, 23, 42, 0.85);
+    background: rgba(44, 46, 58, 0.85);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(249, 115, 22, 0.35);
+    border: 1px solid rgba(10, 33, 192, 0.4);
     border-radius: 18px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(249, 115, 22, 0.2);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(10, 33, 192, 0.25);
 }
 
 .whiteboardNotificationProgressBar {
@@ -864,7 +864,7 @@
     bottom: 0;
     left: 0;
     height: 3px;
-    background: linear-gradient(90deg, #f97316, #ec4899);
+    background: linear-gradient(90deg, #0A21C0, #60A5FA);
     width: 100%;
     animation: shrinkNotificationProgress 3.5s linear forwards;
 }
@@ -878,8 +878,8 @@
     width: 40px;
     height: 40px;
     border-radius: 12px;
-    background: rgba(249, 115, 22, 0.15);
-    border: 1px solid rgba(249, 115, 22, 0.3);
+    background: rgba(10, 33, 192, 0.18);
+    border: 1px solid rgba(10, 33, 192, 0.35);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -900,16 +900,16 @@
 }
 
 .whiteboardNotificationText p strong {
-    color: #f97316;
+    color: #0A21C0;
 }
 
 .whiteboardNotificationText span {
     font-size: 0.75rem;
-    color: #94a3b8;
+    color: #B3B4BD;
 }
 
 .whiteboardNotificationAction {
-    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    background: linear-gradient(135deg, #0A21C0 0%, #1A34E8 100%);
     border: none;
     color: #ffffff;
     padding: 7px 14px;
@@ -920,12 +920,12 @@
     cursor: pointer;
     white-space: nowrap;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
+    box-shadow: 0 4px 12px rgba(10, 33, 192, 0.4);
 }
 
 .whiteboardNotificationAction:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(249, 115, 22, 0.5);
+    box-shadow: 0 6px 16px rgba(10, 33, 192, 0.6);
     filter: brightness(1.1);
 }
 

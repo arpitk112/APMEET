@@ -9,6 +9,8 @@ const getDevServerUrl = () => {
 };
 
 const server = import.meta.env.VITE_API_URL ||
-    (IS_PROD ? "https://apmeet-backend.onrender.com" : getDevServerUrl());
+    (IS_PROD ? "https://apmeet-bckend.onrender.com" : getDevServerUrl());
+
+export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 
 export default server;

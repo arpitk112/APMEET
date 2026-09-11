@@ -1,5 +1,7 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import { GoogleOAuthProvider } from "@react-oauth/google"
+import { GOOGLE_CLIENT_ID } from "./environment"
 import LandingPage from './pages/LandingPage'
 import Authentication from './pages/Authentication'
 import { AuthProvider } from './context/AuthContext'
@@ -10,8 +12,9 @@ import History from './pages/History'
 function App() {
   return (
     <div className="App">
-      <Router>
-        <AuthProvider>
+      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID || "app-auth-client.apps.googleusercontent.com"}>
+        <Router>
+          <AuthProvider>
           <Routes>
             <Route path='/' element={<LandingPage />}></Route>
             <Route path='/auth' element={<Authentication />}></Route>
@@ -21,6 +24,7 @@ function App() {
           </Routes>
         </AuthProvider>
       </Router>
+    </GoogleOAuthProvider>
     </div>
   )
 }

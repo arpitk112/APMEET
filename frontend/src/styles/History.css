@@ -5,8 +5,8 @@
 .historyPageWrapper {
     position: relative;
     min-height: 100vh;
-    width: 100vw;
-    background: radial-gradient(circle at 30% 15%, #151a30 0%, #0a0d18 80%);
+    width: 100%;
+    background: radial-gradient(circle at 30% 15%, #050a44 0%, #141619 80%);
     color: #ffffff;
     overflow-x: hidden;
     padding-bottom: 3rem;
@@ -24,7 +24,7 @@
 .glowLeft {
     width: 450px;
     height: 450px;
-    background: rgba(99, 102, 241, 0.12);
+    background: rgba(10, 33, 192, 0.18);
     top: -50px;
     left: -100px;
 }
@@ -32,7 +32,7 @@
 .glowRight {
     width: 500px;
     height: 500px;
-    background: rgba(249, 115, 22, 0.1);
+    background: rgba(5, 10, 68, 0.35);
     top: 20%;
     right: -100px;
 }
@@ -54,10 +54,10 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(44, 46, 58, 0.5);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #cbd5e1;
+    border: 1px solid rgba(179, 180, 189, 0.16);
+    color: #B3B4BD;
     padding: 0.6rem 1.2rem;
     border-radius: 12px;
     font-size: 0.9rem;
@@ -68,8 +68,8 @@
 }
 
 .historyBackBtn:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.25);
+    background: rgba(44, 46, 58, 0.85);
+    border-color: rgba(179, 180, 189, 0.35);
     color: #ffffff;
     transform: translateY(-2px);
 }
@@ -87,9 +87,9 @@
     justify-content: center;
     width: 38px;
     height: 38px;
-    background: linear-gradient(135deg, #f97316, #ec4899);
+    background: linear-gradient(135deg, #0A21C0, #1A34E8);
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
+    box-shadow: 0 4px 15px rgba(10, 33, 192, 0.4);
 }
 
 .historyBrand h2 {
@@ -99,7 +99,7 @@
 }
 
 .historyBrand h2 span {
-    color: #f97316;
+    color: #0A21C0;
 }
 
 /* ================= Content & Cards Grid ================= */
@@ -119,10 +119,10 @@
 
 /* Glass History Card */
 .glassHistoryCard {
-    background: rgba(15, 23, 42, 0.65);
+    background: rgba(44, 46, 58, 0.65);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(179, 180, 189, 0.16);
     border-radius: 20px;
     padding: 1.5rem;
     display: flex;
@@ -134,8 +134,8 @@
 
 .glassHistoryCard:hover {
     transform: translateY(-5px);
-    border-color: rgba(249, 115, 22, 0.4);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(249, 115, 22, 0.15);
+    border-color: rgba(10, 33, 192, 0.5);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(10, 33, 192, 0.2);
 }
 
 .cardTopRow {
@@ -148,8 +148,9 @@
     width: 44px;
     height: 44px;
     border-radius: 12px;
-    background: rgba(249, 115, 22, 0.12);
-    border: 1px solid rgba(249, 115, 22, 0.25);
+    background: rgba(10, 33, 192, 0.15);
+    border: 1px solid rgba(10, 33, 192, 0.3);
+    color: #0A21C0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -164,9 +165,9 @@
     width: 34px;
     height: 34px;
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.05);
-    color: #94a3b8;
+    border: 1px solid rgba(179, 180, 189, 0.16);
+    background: rgba(44, 46, 58, 0.5);
+    color: #B3B4BD;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -175,9 +176,9 @@
 }
 
 .copyBtn:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(44, 46, 58, 0.85);
     color: #ffffff;
-    border-color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(179, 180, 189, 0.35);
 }
 
 .deleteBtn:hover {
@@ -197,7 +198,7 @@
     font-size: 0.7rem;
     font-weight: 600;
     letter-spacing: 0.8px;
-    color: #64748b;
+    color: #838594;
 }
 
 .meetingCodeText {
@@ -213,7 +214,7 @@
     align-items: center;
     gap: 0.4rem;
     font-size: 0.8rem;
-    color: #94a3b8;
+    color: #B3B4BD;
     margin-top: 0.4rem;
 }
 
@@ -221,7 +222,7 @@
 .cardFooter {
     margin-top: auto;
     padding-top: 0.75rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(179, 180, 189, 0.12);
 }
 
 .rejoinBtn {
@@ -230,8 +231,8 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(44, 46, 58, 0.5);
+    border: 1px solid rgba(179, 180, 189, 0.16);
     color: #ffffff;
     padding: 0.7rem 1.2rem;
     border-radius: 12px;
@@ -243,9 +244,9 @@
 }
 
 .rejoinBtn:hover {
-    background: linear-gradient(135deg, #f97316, #ea580c);
+    background: linear-gradient(135deg, #0A21C0, #1A34E8);
     border-color: transparent;
-    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.35);
+    box-shadow: 0 4px 15px rgba(10, 33, 192, 0.4);
     transform: translateY(-2px);
 }
 
@@ -254,9 +255,9 @@
     max-width: 500px;
     margin: 4rem auto;
     text-align: center;
-    background: rgba(15, 23, 42, 0.5);
+    background: rgba(44, 46, 58, 0.6);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(179, 180, 189, 0.16);
     border-radius: 28px;
     padding: 3.5rem 2.5rem;
     display: flex;
@@ -269,11 +270,12 @@
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(44, 46, 58, 0.5);
+    border: 1px solid rgba(179, 180, 189, 0.16);
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #0A21C0;
 }
 
 .glassEmptyState h3 {
@@ -283,14 +285,14 @@
 }
 
 .glassEmptyState p {
-    color: #94a3b8;
+    color: #B3B4BD;
     font-size: 0.95rem;
     line-height: 1.6;
 }
 
 .emptyActionBtn {
     margin-top: 0.5rem;
-    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    background: linear-gradient(135deg, #0A21C0 0%, #1A34E8 100%);
     border: none;
     color: #ffffff;
     padding: 0.85rem 2rem;
@@ -300,12 +302,12 @@
     font-family: inherit;
     cursor: pointer;
     transition: all 0.25s ease;
-    box-shadow: 0 8px 20px rgba(249, 115, 22, 0.35);
+    box-shadow: 0 8px 20px rgba(10, 33, 192, 0.4);
 }
 
 .emptyActionBtn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 25px rgba(249, 115, 22, 0.5);
+    box-shadow: 0 12px 25px rgba(10, 33, 192, 0.6);
     filter: brightness(1.1);
 }
 

@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: apmeet-backend
+    name: apmeet-bckend
     env: node
     plan: free
     rootDir: backend

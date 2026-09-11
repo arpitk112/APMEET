@@ -1,9 +1,11 @@
 import { Router } from "express";
-import { addToHistory, getUserHistory, login, register, deleteUserHistory } from "../controllers/user.controller.js";
+import { addToHistory, getUserHistory, login, register, deleteUserHistory, googleAuth } from "../controllers/user.controller.js";
 
 const router = Router();
 
-router.route("/login").post(login)
+router.route("/google-auth").post(googleAuth);
+
+router.route("/login").post(login);
 
 router.route("/register").post(register)
 
