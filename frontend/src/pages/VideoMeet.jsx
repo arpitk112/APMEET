@@ -1,3 +1,4 @@
+// Main video meeting component: manages WebRTC peer connections, socket events, and whiteboard
 import React, { useEffect, useRef, useState } from "react";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -13,57 +14,55 @@ import ScreenShareIcon from "@mui/icons-material/ScreenShare";
 import StopScreenShareIcon from "@mui/icons-material/StopScreenShare";
 import Badge from "@mui/material/Badge";
 import ChatIcon from "@mui/icons-material/Chat";
+import DrawIcon from "@mui/icons-material/Draw";
+import Whiteboard from "../components/Whiteboard";
 import { useNavigate } from "react-router-dom";
 import server from "../environment";
 
 const server_url = server;
 
+// Active WebRTC connections keyed by peer socket id: { [socketId]: RTCPeerConnection }
 var connections = {};
 
+// Free Google STUN servers for NAT traversal
 const peerConfigConnections = {
     "iceServers": [
-        {
-            urls: "stun:stun.l.google.com:19302"
-        }
+        { urls: "stun:stun.l.google.com:19302" },
+        { urls: "stun:stun1.l.google.com:19302" },
+        { urls: "stun:stun2.l.google.com:19302" },
+        { urls: "stun:stun3.l.google.com:19302" },
+        { urls: "stun:stun4.l.google.com:19302" }
     ]
 }
 
 export default function VideoMeetComponent() {
-
     var socketRef = useRef();
     let socketIdRef = useRef();
-
     let localVideoRef = useRef();
 
     let [videoAvailable, setVideoAvailable] = useState(true);
-
     let [audioAvailable, setAudioAvailable] = useState(true);
-
-    let [video, setVideo] = useState();
-
-    let [audio, setAudio] = useState();
-
-    let [screen, setScreen] = useState();
-
-    let [showModal, setShowModal] = useState(false);
-
     let [screenAvailable, setScreenAvailable] = useState();
 
+    let [video, setVideo] = useState();
+    let [audio, setAudio] = useState();
+    let [screen, setScreen] = useState();
+
+    let [showModal, setShowModal] = useState(false); // Chat panel toggle
+    let [showWhiteboard, setShowWhiteboard] = useState(false); // Whiteboard toggle
+    let [whiteboardNotification, setWhiteboardNotification] = useState({ open: false, sender: "" }); // "User opened whiteboard" popup
+    let [newWhiteboardActivity, setNewWhiteboardActivity] = useState(false);
+
     let [messages, setMessages] = useState([]);
-
     let [message, setMessage] = useState("");
-
     let [newMessages, setNewMessages] = useState(0);
 
-    let [askForUsername, setAskForUsername] = useState(true)
-
+    let [askForUsername, setAskForUsername] = useState(true); // Lobby screen toggle
     let [username, setUsername] = useState("");
 
     const videoRef = useRef([]);
-
     let [videos, setVideos] = useState([]);
-
-    let [spotlightVideo, setSpotlightVideo] = useState(null);
+    let [spotlightVideo, setSpotlightVideo] = useState(null); // Clicked video pinned in spotlight mode
 
     const getPermissions = async () => {
         try {
@@ -208,12 +207,18 @@ export default function VideoMeetComponent() {
         }
     }, [audio, video])
 
+    /**
+     * WEBRTC SIGNALING MESSAGE DISPATCHER:
+     * Receives SDP offers, SDP answers, and ICE candidates routed via Socket.IO.
+     */
     let gotMessageFromServer = (fromId, message) => {
         var signal = JSON.parse(message)
 
         if (fromId !== socketIdRef.current) {
+            // 1. Session Description Protocol (SDP) exchange
             if (signal.sdp) {
                 connections[fromId].setRemoteDescription(new RTCSessionDescription(signal.sdp)).then(() => {
+                    // If received an offer, create an answer and send back to caller
                     if (signal.sdp.type === "offer") {
                         connections[fromId].createAnswer().then((description) => {
                             connections[fromId].setLocalDescription(description).then(() => {
@@ -224,6 +229,7 @@ export default function VideoMeetComponent() {
                 }).catch(e => console.log(e))
             }
 
+            // 2. Interactive Connectivity Establishment (ICE) candidate exchange
             if (signal.ice) {
                 connections[fromId].addIceCandidate(new RTCIceCandidate(signal.ice)).catch(e => console.log(e))
             }
@@ -240,26 +246,42 @@ export default function VideoMeetComponent() {
         }
     }
 
+    // Connects to signaling server and listens for WebRTC & chat events
     let connectToSocketServer = () => {
         socketRef.current = io.connect(server_url)
 
         socketRef.current.on('signal', gotMessageFromServer)
 
         socketRef.current.on("connect", () => {
-
-            socketRef.current.emit("join-call", window.location.href)
+            // Join room using pathname so localhost and LAN mobile IP land in the same room
+            socketRef.current.emit("join-call", window.location.pathname)
 
             socketIdRef.current = socketRef.current.id;
 
             socketRef.current.on("chat-message", addMessage)
 
+            // Popup alert when someone starts using the whiteboard
+            socketRef.current.on("whiteboard-started", (senderName) => {
+                setWhiteboardNotification({
+                    open: true,
+                    sender: senderName || "A participant",
+                });
+                setNewWhiteboardActivity(true);
+            });
+
+            // Remove participant video and close connection when they leave
             socketRef.current.on("user-left", (id) => {
-                setVideos((videos) => videos.filter((video) => video.socketId !== id))
+                setVideos((videos) => videos.filter((video) => video.socketId !== id));
+                videoRef.current = videoRef.current.filter((video) => video.socketId !== id);
+                if (connections[id]) {
+                    try { connections[id].close(); } catch (e) { }
+                    delete connections[id];
+                }
             })
 
+            // Set up WebRTC connection whenever a new user joins
             socketRef.current.on("user-joined", (id, clients) => {
                 clients.forEach((socketListId) => {
-
                     connections[socketListId] = new RTCPeerConnection(peerConfigConnections);
 
                     connections[socketListId].onicecandidate = (event) => {
@@ -268,20 +290,21 @@ export default function VideoMeetComponent() {
                         }
                     }
 
+                    // Attach remote video track (supports mobile Safari stream fallback)
                     connections[socketListId].ontrack = (event) => {
-
+                        const incomingStream = (event.streams && event.streams[0]) ? event.streams[0] : new MediaStream([event.track]);
                         let videoExists = videoRef.current.find(video => video.socketId === socketListId);
 
                         if (videoExists) {
                             let updateVideos = videoRef.current.map(video =>
-                                video.socketId === socketListId ? { ...video, stream: event.streams[0] } : video
+                                video.socketId === socketListId ? { ...video, stream: incomingStream } : video
                             );
                             videoRef.current = updateVideos;
                             setVideos(updateVideos);
                         } else {
                             let newVideo = {
                                 socketId: socketListId,
-                                stream: event.streams[0],
+                                stream: incomingStream,
                                 autoPlay: true,
                                 playsinline: true
                             }
@@ -464,6 +487,16 @@ export default function VideoMeetComponent() {
         }
     }, [screen]);
 
+    // Auto-dismiss whiteboard notification popup after 3.5 seconds (3 to 4 seconds)
+    useEffect(() => {
+        if (whiteboardNotification.open) {
+            const timer = setTimeout(() => {
+                setWhiteboardNotification({ open: false, sender: "" });
+            }, 3500);
+            return () => clearTimeout(timer);
+        }
+    }, [whiteboardNotification.open]);
+
     let handleEndCall = () => {
         try {
             if (localVideoRef.current && localVideoRef.current.srcObject) {
@@ -496,30 +529,47 @@ export default function VideoMeetComponent() {
         <div>
             {askForUsername === true ?
                 <div className={styles.lobbyContainer}>
+                    <div className={styles.lobbyGlow}></div>
                     <div className={styles.lobbyCard}>
-                        <h2>Enter into Lobby</h2>
+                        <div className={styles.lobbyHeader}>
+                            <div className={styles.lobbyBrandLogo}>
+                                <VideocamIcon style={{ color: '#fff', fontSize: 24 }} />
+                            </div>
+                            <h2>Ready to Join?</h2>
+                            <p className={styles.lobbySubtitle}>Check your camera and audio preview before entering</p>
+                        </div>
 
-                        <video
-                            className={styles.lobbyVideo}
-                            ref={localVideoRef}
-                            autoPlay
-                            muted
-                        />
+                        <div className={styles.lobbyVideoWrapper}>
+                            <video
+                                className={styles.lobbyVideo}
+                                ref={localVideoRef}
+                                autoPlay
+                                muted
+                            />
+                            <div className={styles.lobbyVideoBadge}>
+                                <span className={styles.lobbyLiveDot}></span>
+                                <span>Preview Active</span>
+                            </div>
+                        </div>
 
                         <div className={styles.lobbyActions}>
                             <TextField
-                                label="Username"
+                                label="Your Display Name"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 variant="outlined"
                                 fullWidth
+                                className="glassTextField"
+                                autoFocus
                             />
                             <Button
                                 variant="contained"
                                 onClick={connect}
                                 fullWidth
+                                disabled={!username.trim()}
+                                className={styles.lobbyJoinBtn}
                             >
-                                Connect
+                                Enter Meeting Room
                             </Button>
                         </div>
                     </div>
@@ -530,16 +580,14 @@ export default function VideoMeetComponent() {
                     <div className={`${styles.chatRoom} ${showModal ? styles.open : ''}`}>
                         <div className={styles.chatContainer}>
                             <div className={styles.chatHeader}>
-                                <span>In-call messages</span>
-                                <IconButton
+                                <span>In-Call Messages</span>
+                                <button
                                     onClick={handleChat}
-                                    size="small"
-                                    style={{ marginLeft: 'auto', color: '#5f6368' }}
+                                    className={styles.chatCloseBtn}
+                                    title="Close Chat"
                                 >
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                                    </svg>
-                                </IconButton>
+                                    ✕
+                                </button>
                             </div>
 
                             <div className={styles.chattingDisplay}>
@@ -554,7 +602,7 @@ export default function VideoMeetComponent() {
                                             <p className={styles.messageText}>{item.data}</p>
                                         </div>
                                     )
-                                }) : <p className={styles.noMessages}>No messages yet</p>}
+                                }) : <p className={styles.noMessages}>No messages yet. Say hello!</p>}
                             </div>
 
                             <div className={styles.chattingArea}>
@@ -562,16 +610,23 @@ export default function VideoMeetComponent() {
                                     id="outlined-basic"
                                     value={message}
                                     onChange={(e) => setMessage(e.target.value)}
-                                    onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                                    placeholder="Send a message to everyone"
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && !e.shiftKey) {
+                                            e.preventDefault();
+                                            sendMessage();
+                                        }
+                                    }}
+                                    placeholder="Send a message..."
                                     variant="outlined"
                                     fullWidth
                                     size="small"
+                                    className="glassTextField"
                                 />
                                 <Button
                                     variant="contained"
                                     onClick={sendMessage}
                                     disabled={!message.trim()}
+                                    className={styles.chatSendBtn}
                                 >
                                     Send
                                 </Button>
@@ -581,6 +636,39 @@ export default function VideoMeetComponent() {
 
                     {/* Video Area - dynamically resizes when chat opens */}
                     <div className={`${styles.videoArea} ${showModal ? styles.chatOpen : ''}`}>
+                        {/* Whiteboard Notification Banner */}
+                        {whiteboardNotification.open && (
+                            <div className={styles.whiteboardNotificationBanner}>
+                                <div className={styles.whiteboardNotificationContent}>
+                                    <div className={styles.whiteboardIconPill}>
+                                        <DrawIcon style={{ fontSize: 20, color: "#f97316" }} />
+                                    </div>
+                                    <div className={styles.whiteboardNotificationText}>
+                                        <p><strong>{whiteboardNotification.sender}</strong> started using the Whiteboard</p>
+                                        <span>Click to view and sketch collaboratively</span>
+                                    </div>
+                                    <button
+                                        className={styles.whiteboardNotificationAction}
+                                        onClick={() => {
+                                            setShowWhiteboard(true);
+                                            setNewWhiteboardActivity(false);
+                                            setWhiteboardNotification({ open: false, sender: "" });
+                                        }}
+                                    >
+                                        Open Board
+                                    </button>
+                                    <button
+                                        className={styles.whiteboardNotificationClose}
+                                        onClick={() => setWhiteboardNotification({ open: false, sender: "" })}
+                                        title="Dismiss notification"
+                                    >
+                                        ✕
+                                    </button>
+                                    <div className={styles.whiteboardNotificationProgressBar}></div>
+                                </div>
+                            </div>
+                        )}
+
                         {/* Spotlight Mode or Grid Mode */}
                         {spotlightVideo ? (
                             // Spotlight View: Large main video + thumbnail strip
@@ -690,34 +778,83 @@ export default function VideoMeetComponent() {
                                         muted
                                     ></video>
                                     <div className={styles.pipLabel}>
-                                        <span>{username} (You)</span>
+                                        <span>{username || "You"} (You)</span>
                                     </div>
                                 </div>
                             </>
                         )}
 
-                        {/* Bottom control bar */}
+                        {/* Bottom floating glass control bar */}
                         <div className={styles.buttonContainers}>
-                            <IconButton style={{ color: "white" }} onClick={handleVideo}>
-                                {(video === true) ? <VideocamIcon /> : <VideocamOffIcon />}
-                            </IconButton>
-                            <IconButton onClick={handleEndCall} style={{ color: "red" }}>
-                                <CallEndIcon />
-                            </IconButton>
-                            <IconButton style={{ color: "white" }} onClick={handleAudio}>
-                                {(audio === true) ? <MicIcon /> : <MicOffIcon />}
+                            <IconButton 
+                                className={`${styles.controlBtn} ${video === false ? styles.controlBtnOff : ''}`} 
+                                onClick={handleVideo}
+                                title={video ? "Turn off camera" : "Turn on camera"}
+                            >
+                                {video === true ? <VideocamIcon /> : <VideocamOffIcon />}
                             </IconButton>
 
-                            {screenAvailable === true ? <IconButton style={{ color: "white" }} onClick={handleScreen}>
-                                {screen === true ? <StopScreenShareIcon /> : <ScreenShareIcon />}
-                            </IconButton> : <> </>}
+                            <IconButton 
+                                className={`${styles.controlBtn} ${audio === false ? styles.controlBtnOff : ''}`} 
+                                onClick={handleAudio}
+                                title={audio ? "Mute microphone" : "Unmute microphone"}
+                            >
+                                {audio === true ? <MicIcon /> : <MicOffIcon />}
+                            </IconButton>
 
-                            <Badge badgeContent={newMessages} max={999} color="secondary">
-                                <IconButton onClick={handleChat} style={{ color: "white" }} >
+                            {screenAvailable === true && (
+                                <IconButton 
+                                    className={styles.controlBtn} 
+                                    onClick={handleScreen}
+                                    title={screen ? "Stop sharing screen" : "Share screen"}
+                                >
+                                    {screen === true ? <StopScreenShareIcon /> : <ScreenShareIcon />}
+                                </IconButton>
+                            )}
+
+                            <Badge badgeContent={newMessages} max={99} color="primary">
+                                <IconButton 
+                                    className={`${styles.controlBtn} ${showModal ? styles.controlBtnActive : ''}`} 
+                                    onClick={handleChat}
+                                    title="Toggle chat"
+                                >
                                     <ChatIcon />
                                 </IconButton>
                             </Badge>
+
+                            <Badge color="secondary" variant="dot" invisible={showWhiteboard || !newWhiteboardActivity}>
+                                <IconButton 
+                                    className={`${styles.controlBtn} ${showWhiteboard ? styles.controlBtnActive : ''}`} 
+                                    onClick={() => {
+                                        const nextState = !showWhiteboard;
+                                        setShowWhiteboard(nextState);
+                                        if (nextState) {
+                                            setNewWhiteboardActivity(false);
+                                            socketRef.current?.emit("whiteboard-started", username || "A participant");
+                                        }
+                                    }}
+                                    title={showWhiteboard ? "Close Whiteboard" : "Open Collaborative Whiteboard"}
+                                >
+                                    <DrawIcon />
+                                </IconButton>
+                            </Badge>
+
+                            <IconButton 
+                                onClick={handleEndCall} 
+                                className={styles.endCallBtn}
+                                title="Leave call"
+                            >
+                                <CallEndIcon />
+                            </IconButton>
                         </div>
+
+                        {/* Collaborative Glass Whiteboard Overlay */}
+                        <Whiteboard
+                            socketRef={socketRef}
+                            isOpen={showWhiteboard}
+                            username={username}
+                            onClose={() => setShowWhiteboard(false)}
+                        />
                     </div>
                 </div>
             }

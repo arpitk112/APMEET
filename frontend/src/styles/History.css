@@ -1,92 +1,323 @@
-/* ================= PAGE WRAPPER ================= */
+/* =========================================================================
+   AP-MEET MEETING HISTORY GLASSMORHPISM STYLES (History.css)
+   ========================================================================= */
 
-.historyPage {
+.historyPageWrapper {
+    position: relative;
     min-height: 100vh;
-    background: #f9fafb;
-    padding: 2rem 3rem;
+    width: 100vw;
+    background: radial-gradient(circle at 30% 15%, #151a30 0%, #0a0d18 80%);
+    color: #ffffff;
+    overflow-x: hidden;
+    padding-bottom: 3rem;
 }
 
-/* ================= HEADER ================= */
+/* Ambient Glows */
+.historyAmbientGlow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+}
 
-.historyHeader {
+.glowLeft {
+    width: 450px;
+    height: 450px;
+    background: rgba(99, 102, 241, 0.12);
+    top: -50px;
+    left: -100px;
+}
+
+.glowRight {
+    width: 500px;
+    height: 500px;
+    background: rgba(249, 115, 22, 0.1);
+    top: 20%;
+    right: -100px;
+}
+
+/* ================= Header ================= */
+.historyNav {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 1.5rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.historyBackBtn {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #cbd5e1;
+    padding: 0.6rem 1.2rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.25s ease;
 }
 
-.historyHeader h2 {
-    font-size: 1.6rem;
-    font-weight: 600;
-    color: #111827;
+.historyBackBtn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    transform: translateY(-2px);
 }
 
-/* ================= CARD GRID ================= */
+.historyBrand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+}
+
+.historyLogoIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, #f97316, #ec4899);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
+}
+
+.historyBrand h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.historyBrand h2 span {
+    color: #f97316;
+}
+
+/* ================= Content & Cards Grid ================= */
+.historyContent {
+    position: relative;
+    z-index: 10;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 1rem 2.5rem;
+}
 
 .historyGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.75rem;
 }
 
-/* ================= MEETING CARD ================= */
-
-.historyCard {
-    border-radius: 14px !important;
-    background: #ffffff;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.historyCard:hover {
-    transform: translateY(-4px);
-    box-shadow:
-        0 10px 20px rgba(0, 0, 0, 0.06),
-        0 2px 6px rgba(0, 0, 0, 0.04);
-}
-
-.historyCard .meetingCode {
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: #111827;
-}
-
-.historyCard .meetingDate {
-    font-size: 0.85rem;
-    color: #6b7280;
-    margin-top: 0.5rem;
-}
-
-/* ================= EMPTY STATE ================= */
-
-.emptyState {
-    margin-top: 4rem;
-    text-align: center;
-    color: #6b7280;
-    font-size: 1rem;
-}
-
-/* ================= MOBILE ================= */
-
-@media (max-width: 768px) {
-    .historyPage {
-        padding: 1.5rem;
-    }
-
-    .historyHeader h2 {
-        font-size: 1.4rem;
-    }
-}
-
-.cardActions {
+/* Glass History Card */
+.glassHistoryCard {
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 1.5rem;
     display: flex;
-    justify-content: flex-end;
-    padding: 0.5rem 1rem 1rem;
+    flex-direction: column;
+    gap: 1.25rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.cardActions button {
+.glassHistoryCard:hover {
+    transform: translateY(-5px);
+    border-color: rgba(249, 115, 22, 0.4);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(249, 115, 22, 0.15);
+}
+
+.cardTopRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.meetingIconBadge {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(249, 115, 22, 0.12);
+    border: 1px solid rgba(249, 115, 22, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cardTopActions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.iconActionBtn {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.copyBtn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.deleteBtn:hover {
+    background: rgba(239, 68, 68, 0.2);
     color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.4);
 }
 
-.cardActions button:hover {
-    background: rgba(239, 68, 68, 0.08);
+/* Card Body */
+.cardBody {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.codeLabel {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    color: #64748b;
+}
+
+.meetingCodeText {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #ffffff;
+    font-family: monospace;
+    letter-spacing: 0.5px;
+}
+
+.meetingDateBadge {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-top: 0.4rem;
+}
+
+/* Card Footer */
+.cardFooter {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.rejoinBtn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    padding: 0.7rem 1.2rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.rejoinBtn:hover {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    border-color: transparent;
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.35);
+    transform: translateY(-2px);
+}
+
+/* ================= Empty State ================= */
+.glassEmptyState {
+    max-width: 500px;
+    margin: 4rem auto;
+    text-align: center;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 28px;
+    padding: 3.5rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.emptyIconCircle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.glassEmptyState h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.glassEmptyState p {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.emptyActionBtn {
+    margin-top: 0.5rem;
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    border: none;
+    color: #ffffff;
+    padding: 0.85rem 2rem;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 8px 20px rgba(249, 115, 22, 0.35);
+}
+
+.emptyActionBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(249, 115, 22, 0.5);
+    filter: brightness(1.1);
+}
+
+/* ================= Responsive ================= */
+@media (max-width: 768px) {
+    .historyNav {
+        padding: 1.25rem 1.5rem;
+    }
+    .historyContent {
+        padding: 1rem 1.5rem;
+    }
+    .historyGrid {
+        grid-template-columns: 1fr;
+    }
 }

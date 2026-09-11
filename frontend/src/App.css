@@ -1,217 +1,585 @@
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
-/* ================= Landing Page ================= */
+/* =========================================================================
+   AP-MEET MODERN GLASSMORHPISM STYLES (App.css)
+   ========================================================================= */
 
 .landingPageContainer {
-  width: 100vw;
+  position: relative;
+  width: 100%;
   min-height: 100vh;
-  background-image: url("/background.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  color: white;
+  background: radial-gradient(circle at 20% 20%, #151a30 0%, #0a0d18 70%);
+  color: #ffffff;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ambient glow container strictly clipped to page bounds */
+.ambientContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* GPU-accelerated ambient glows (60fps smooth scrolling) */
+.ambientGlow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glow1 {
+  width: 450px;
+  height: 450px;
+  background: rgba(99, 102, 241, 0.16);
+  top: -60px;
+  left: -60px;
+}
+
+.glow2 {
+  width: 500px;
+  height: 500px;
+  background: rgba(236, 72, 153, 0.12);
+  top: 25%;
+  right: -80px;
+}
+
+.glow3 {
+  width: 400px;
+  height: 400px;
+  background: rgba(249, 115, 22, 0.10);
+  bottom: 0;
+  left: 25%;
 }
 
 /* ================= Navbar ================= */
+.navWrapper {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  padding: 1.25rem 2.5rem;
+  z-index: 50;
+}
 
-.landingPageContainer nav {
-  padding: 1.2rem 1.6rem;
+.glassNav {
+  max-width: 1300px;
+  margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  backdrop-filter: blur(10px);
-  background: rgba(0, 0, 0, 0.35);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.85rem 1.6rem;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
 
-.landingPageContainer nav h2 {
-  font-size: 1.8rem;
-  font-weight: 500;
+.navBrand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   cursor: pointer;
-  letter-spacing: 0.5px;
-  transition: opacity 0.2s ease;
+  text-decoration: none;
 }
 
-.landingPageContainer nav h2:hover {
-  opacity: 0.85;
+.logoIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(135deg, #f97316, #ec4899);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
+}
+
+.logoIcon {
+  color: #ffffff;
+  font-size: 1.5rem !important;
+}
+
+.navBrand h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #ffffff;
+}
+
+.navBrand h2 span {
+  background: linear-gradient(135deg, #f97316, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .navList {
   display: flex;
-  gap: 1.2rem;
   align-items: center;
+  gap: 1rem;
 }
 
-.navList p,
-.navList div[role="button"] {
-  padding: 0.5rem 1rem;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
-  font-size: 0.95rem;
-}
-
-.navList p:hover,
-.navList div[role="button"]:hover {
-  background: rgba(255, 255, 255, 0.12);
-  transform: translateY(-1px);
-}
-
-/* Primary CTA */
-.navList div[role="button"] {
-  background: rgba(217, 117, 0, 0.9);
+.navGlassBtn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  padding: 0.55rem 1.15rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
   font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.navList div[role="button"]:hover {
-  background: rgba(217, 117, 0, 1);
-}
-
-/* ================= Main Section ================= */
-
-.landingMainContainer {
-  display: flex;
-  justify-content: space-between;
-  padding: 3rem;
-  min-height: calc(100vh - 90px);
-  align-items: center;
-  gap: 3rem;
-}
-
-.landingMainContainer>div:nth-child(1) {
-  font-size: 2rem;
-  max-width: 600px;
-}
-
-.landingMainContainer>div:nth-child(1) h1 {
-  line-height: 1.2;
-}
-
-.landingMainContainer>div:nth-child(1) p {
-  margin-top: 1rem;
-  font-size: 1.1rem;
-  opacity: 0.9;
-}
-
-.landingMainContainer>div:nth-child(1) div[role="button"] {
-  background: #D97500;
-  width: fit-content;
-  padding: 0.9rem 1.8rem;
-  border-radius: 15px;
-  margin-top: 2rem;
-  transition: transform 0.2s ease, background 0.2s ease;
-}
-
-.landingMainContainer>div:nth-child(1) div[role="button"]:hover {
+.navGlassBtn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
   transform: translateY(-2px);
-  background: #c96a00;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
 }
 
-.landingMainContainer>div:nth-child(1) div[role="button"] a {
-  text-decoration: none;
-  color: white;
-  font-size: 1.6rem;
+.navPrimaryBtn {
+  background: linear-gradient(135deg, #f97316 0%, #ec4899 100%);
+  border: none;
+  color: #ffffff;
+  padding: 0.6rem 1.4rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(249, 115, 22, 0.35);
 }
 
-.landingMainContainer>div:nth-child(2) img {
-  height: 75vh;
-  max-width: 100%;
+.navPrimaryBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(249, 115, 22, 0.5);
+  filter: brightness(1.1);
 }
 
-/* ================= Other Existing Styles ================= */
+/* ================= Hero Main Section ================= */
+.landingMainContainer {
+  position: relative;
+  z-index: 10;
+  max-width: 1300px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 3rem 2.5rem;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  align-items: center;
+  gap: 3.5rem;
+  flex: 1;
+}
 
-.navBar {
+.heroContent {
   display: flex;
-  justify-content: space-between;
-  padding: 0.5rem;
+  flex-direction: column;
+  gap: 1.75rem;
 }
 
-.meetContainer {
+/* Hero Badge */
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: fit-content;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #a5b4fc;
+  backdrop-filter: blur(8px);
+}
+
+.badgePulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #6366f1;
+  box-shadow: 0 0 10px #6366f1;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(99, 102, 241, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+}
+
+.heroTitle {
+  font-size: 3.6rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -1.5px;
+  color: #ffffff;
+}
+
+.gradientText {
+  background: linear-gradient(135deg, #f97316 0%, #ec4899 50%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.heroDescription {
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: #94a3b8;
+  max-width: 580px;
+}
+
+.heroActions {
   display: flex;
-  padding-inline: 20px;
-  height: 80vh;
-  gap: 10vw;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.ctaPrimaryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #db2777 100%);
+  border: none;
+  color: #ffffff;
+  padding: 1rem 2rem;
+  border-radius: 16px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 30px rgba(249, 115, 22, 0.4);
+}
+
+.ctaPrimaryBtn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 14px 40px rgba(249, 115, 22, 0.55);
+  filter: brightness(1.1);
+}
+
+.ctaPrimaryBtn .btnIcon {
+  font-size: 1.2rem !important;
+  transition: transform 0.2s ease;
+}
+
+.ctaPrimaryBtn:hover .btnIcon {
+  transform: translateX(4px);
+}
+
+.ctaSecondaryBtn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  color: #f1f5f9;
+  padding: 1rem 1.8rem;
+  border-radius: 16px;
+  font-size: 1.05rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ctaSecondaryBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+/* Feature Highlights Grid */
+.featureHighlightRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.glassFeaturePill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.1rem;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #cbd5e1;
+}
+
+.featurePillIcon {
+  color: #f97316;
+  font-size: 1.15rem !important;
+}
+
+/* ================= Hero Showcase Mockup ================= */
+.heroShowcase {
+  display: flex;
   justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
-.rightPanel {
+.glassMockupCard {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 28px;
+  padding: 1.25rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  transition: transform 0.4s ease;
+}
+
+.glassMockupCard:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.mockupHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mockupDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.dotRed { background: #ef4444; }
+.dotYellow { background: #f59e0b; }
+.dotGreen { background: #10b981; }
+
+.mockupTitle {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-family: monospace;
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+}
+
+.mockupImageContainer {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.mockupImage {
+  max-height: 55vh;
+  width: auto;
+  object-fit: contain;
+  border-radius: 16px;
+  filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.5));
+}
+
+/* Floating Badges on Mockup */
+.floatingGlassBadge {
   position: absolute;
-  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 0.6rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #f8fafc;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  animation: float 4s ease-in-out infinite alternate;
 }
 
-/* ================= Tablet ================= */
+.badgeTopRight {
+  top: 24px;
+  right: 12px;
+}
 
+.badgeBottomLeft {
+  bottom: 24px;
+  left: 12px;
+  animation-delay: 2s;
+}
+
+.liveIndicator {
+  width: 8px;
+  height: 8px;
+  background: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #10b981;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-8px); }
+}
+
+/* ================= Responsive Breakpoints ================= */
 @media (max-width: 1024px) {
+  .heroTitle {
+    font-size: 2.8rem;
+  }
   .landingMainContainer {
-    padding: 2rem;
     gap: 2rem;
-  }
-
-  .landingMainContainer>div:nth-child(1) {
-    font-size: 1.7rem;
-  }
-
-  .landingMainContainer>div:nth-child(2) img {
-    height: 60vh;
+    padding: 2rem;
   }
 }
-
-/* ================= Mobile ================= */
 
 @media (max-width: 768px) {
-  .landingPageContainer nav {
-    padding: 1rem;
+  .navWrapper {
+    padding: 0.75rem 1rem;
   }
-
+  .glassNav {
+    padding: 0.55rem 0.85rem;
+    border-radius: 16px;
+  }
+  .navBrand h2 {
+    font-size: 1.25rem;
+  }
+  .logoIconWrapper {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+  }
+  .logoIcon {
+    font-size: 1.2rem !important;
+  }
   .navList {
-    gap: 0.6rem;
+    gap: 0.5rem;
   }
-
-  .navList p,
-  .navList div[role="button"] {
-    padding: 0.4rem 0.7rem;
-    font-size: 0.85rem;
+  /* Hide guest button on mobile navbar (it's already the primary CTA in the hero) */
+  .navHideMobile {
+    display: none !important;
+  }
+  .navGlassBtn, .navPrimaryBtn {
+    padding: 0.45rem 0.8rem;
+    font-size: 0.82rem;
+    border-radius: 10px;
+    white-space: nowrap;
   }
 
   .landingMainContainer {
-    flex-direction: column;
+    grid-template-columns: 1fr;
     text-align: center;
-    padding: 2rem 1.5rem;
+    padding: 1.25rem 1rem;
   }
-
-  .landingMainContainer>div:nth-child(1) {
-    font-size: 1.4rem;
+  .heroContent {
+    align-items: center;
   }
-
-  .landingMainContainer>div:nth-child(1) div[role="button"] a {
-    font-size: 1.3rem;
+  .heroBadge {
+    font-size: 0.78rem;
+    padding: 0.4rem 0.85rem;
+    max-width: 95%;
   }
-
-  .landingMainContainer>div:nth-child(2) img {
-    height: 45vh;
+  .heroTitle {
+    font-size: clamp(1.8rem, 6.5vw, 2.3rem);
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    word-break: break-word;
+  }
+  .heroDescription {
+    font-size: clamp(0.92rem, 3.2vw, 1.05rem);
+    line-height: 1.6;
+    padding: 0 4px;
+    max-width: 100%;
+  }
+  .heroActions {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.75rem;
+  }
+  .ctaPrimaryBtn, .ctaSecondaryBtn {
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: center;
+    padding: 0.9rem 1.25rem;
+    font-size: 1rem;
+  }
+  .featureHighlightRow {
+    justify-content: center;
+    gap: 0.5rem;
+    max-width: 100%;
+  }
+  .glassFeaturePill {
+    padding: 0.45rem 0.8rem;
+    font-size: 0.78rem;
+    white-space: nowrap;
+  }
+  .glassMockupCard {
+    padding: 1rem;
+    border-radius: 20px;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .mockupTitle {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.4rem;
+  }
+  .mockupImage {
+    max-height: 38vh;
+    max-width: 100%;
   }
 }
 
-/* ================= Small Mobile ================= */
-
-@media (max-width: 480px) {
-  .landingPageContainer nav h2 {
-    font-size: 1.4rem;
+/* Small smartphones (width <= 400px, e.g. iPhone SE, Galaxy A) */
+@media (max-width: 400px) {
+  .navWrapper {
+    padding: 0.5rem 0.75rem;
   }
-
-  .navList {
-    gap: 0.4rem;
+  .glassNav {
+    padding: 0.5rem 0.65rem;
   }
-
-  .navList p,
-  .navList div[role="button"] {
-    padding: 0.35rem 0.7rem;
-    font-size: 0.8rem;
-    white-space: nowrap;
+  .navBrand h2 {
+    font-size: 1.15rem;
+  }
+  .logoIconWrapper {
+    width: 30px;
+    height: 30px;
+  }
+  .navGlassBtn, .navPrimaryBtn {
+    padding: 0.38rem 0.65rem;
+    font-size: 0.76rem;
+  }
+  .landingMainContainer {
+    padding: 1rem 0.65rem;
+  }
+  .heroTitle {
+    font-size: 1.7rem;
+  }
+  .glassFeaturePill {
+    padding: 0.4rem 0.65rem;
+    font-size: 0.72rem;
   }
 }

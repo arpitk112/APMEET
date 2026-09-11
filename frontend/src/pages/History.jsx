@@ -2,97 +2,174 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Snackbar from '@mui/material/Snackbar';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import Alert from '@mui/material/Alert';
 import { IconButton } from "@mui/material";
-import HomeIcon from '@mui/icons-material/Home';
-import "../styles/History.css"
-import DeleteIcon from '@mui/icons-material/Delete';
-
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import VideoCallIcon from '@mui/icons-material/VideoCall';
+import EventIcon from '@mui/icons-material/Event';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import VideocamIcon from '@mui/icons-material/Videocam';
+import "../styles/History.css";
+import Footer from "../components/Footer";
 
 export default function History() {
-
     const { getHistoryOfUser, deleteFromHistory } = useContext(AuthContext);
-
     const [meetings, setMeetings] = useState([]);
-
-    const routeTo = useNavigate();
+    const [toastMessage, setToastMessage] = useState("");
+    const [openToast, setOpenToast] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchHistory = async () => {
             try {
                 const history = await getHistoryOfUser();
-                setMeetings(history);
+                if (Array.isArray(history)) {
+                    setMeetings(history);
+                }
             } catch (e) {
-                <Snackbar
-                    open={open}
-                    autoHideDuration={4000}
-                    message={e}
-                />
+                setToastMessage("Failed to fetch meeting history");
+                setOpenToast(true);
             }
-        }
+        };
         fetchHistory();
-    }, [])
+    }, []);
 
     const handleDelete = async (meetingCode) => {
-        await deleteFromHistory(meetingCode);
-        setMeetings(prev =>
-            prev.filter(m => m.meetingCode !== meetingCode)
-        );
+        try {
+            await deleteFromHistory(meetingCode);
+            setMeetings(prev => prev.filter(m => m.meetingCode !== meetingCode));
+            setToastMessage("Meeting removed from history");
+            setOpenToast(true);
+        } catch (err) {
+            setToastMessage("Failed to delete meeting");
+            setOpenToast(true);
+        }
     };
 
+    const handleCopyCode = (code) => {
+        navigator.clipboard.writeText(code);
+        setToastMessage(`Copied "${code}" to clipboard!`);
+        setOpenToast(true);
+    };
 
-    let formatDate = (dateString) => {
-        const date = new Date(dateString);
-        const day = date.getDate().toString().padStart(2, "0");
-        const month = (date.getMonth() + 1).toString().padStart(2, "0")
-        const year = date.getFullYear();
+    const handleRejoin = (meetingCode) => {
+        navigate(`/${meetingCode}`);
+    };
 
-        return `${day}/${month}/${year}`;
-    }
+    const formatDate = (dateString) => {
+        try {
+            const date = new Date(dateString);
+            return date.toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+            });
+        } catch (e) {
+            return dateString;
+        }
+    };
 
     return (
-        <div className="historyPage">
+        <div className="historyPageWrapper">
+            {/* Ambient Background Lights */}
+            <div className="historyAmbientGlow glowLeft"></div>
+            <div className="historyAmbientGlow glowRight"></div>
 
-            <div className="historyHeader">
-                <IconButton onClick={() => routeTo("/home")}>
-                    <HomeIcon />
-                </IconButton>
-                <h2>Meeting History</h2>
-            </div>
+            {/* Header */}
+            <header className="historyNav">
+                <button className="historyBackBtn" onClick={() => navigate("/home")}>
+                    <ArrowBackIcon style={{ fontSize: 20 }} />
+                    <span>Back to Dashboard</span>
+                </button>
 
-            {meetings.length !== 0 ? (
-                <div className="historyGrid">
-                    {meetings.map((e, i) => (
-                        <Card key={i} className="historyCard" variant="outlined">
-                            <CardContent>
-                                <Typography className="meetingCode">
-                                    Meeting Code: {e.meetingCode}
-                                </Typography>
-                                <Typography className="meetingDate">
-                                    Date: {formatDate(e.date)}
-                                </Typography>
-                            </CardContent>
-                            <CardActions className="cardActions">
-                                <IconButton
-                                    size="small"
-                                    onClick={() => handleDelete(e.meetingCode)}
-                                >
-                                    <DeleteIcon fontSize="small" />
-                                </IconButton>
-                            </CardActions>
-                        </Card>
-                    ))}
+                <div className="historyBrand" onClick={() => navigate('/home')}>
+                    <div className="historyLogoIcon">
+                        <VideocamIcon style={{ fontSize: 22, color: '#fff' }} />
+                    </div>
+                    <h2>Meeting <span>History</span></h2>
                 </div>
-            ) : (
-                <div className="emptyState">
-                    No meetings yet
-                </div>
-            )}
+            </header>
+
+            {/* Main Content */}
+            <main className="historyContent">
+                {meetings.length > 0 ? (
+                    <div className="historyGrid">
+                        {meetings.map((meeting, i) => (
+                            <div key={i} className="glassHistoryCard">
+                                <div className="cardTopRow">
+                                    <div className="meetingIconBadge">
+                                        <VideoCallIcon style={{ fontSize: 22, color: '#f97316' }} />
+                                    </div>
+                                    <div className="cardTopActions">
+                                        <button 
+                                            className="iconActionBtn copyBtn"
+                                            title="Copy meeting code"
+                                            onClick={() => handleCopyCode(meeting.meetingCode)}
+                                        >
+                                            <ContentCopyIcon style={{ fontSize: 16 }} />
+                                        </button>
+                                        <button 
+                                            className="iconActionBtn deleteBtn"
+                                            title="Delete from history"
+                                            onClick={() => handleDelete(meeting.meetingCode)}
+                                        >
+                                            <DeleteOutlineIcon style={{ fontSize: 18 }} />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="cardBody">
+                                    <span className="codeLabel">ROOM CODE</span>
+                                    <h4 className="meetingCodeText">{meeting.meetingCode}</h4>
+                                    
+                                    <div className="meetingDateBadge">
+                                        <EventIcon style={{ fontSize: 14 }} />
+                                        <span>{formatDate(meeting.date)}</span>
+                                    </div>
+                                </div>
+
+                                <div className="cardFooter">
+                                    <button 
+                                        className="rejoinBtn"
+                                        onClick={() => handleRejoin(meeting.meetingCode)}
+                                    >
+                                        <PlayArrowIcon style={{ fontSize: 18 }} />
+                                        <span>Rejoin Call</span>
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="glassEmptyState">
+                        <div className="emptyIconCircle">
+                            <VideoCallIcon style={{ fontSize: 48, color: '#94a3b8' }} />
+                        </div>
+                        <h3>No Call History Found</h3>
+                        <p>When you participate in or host calls, your past meetings will be saved here for instant rejoining.</p>
+                        <button className="emptyActionBtn" onClick={() => navigate("/home")}>
+                            Start a Meeting
+                        </button>
+                    </div>
+                )}
+            </main>
+
+            <Snackbar
+                open={openToast}
+                autoHideDuration={3000}
+                onClose={() => setOpenToast(false)}
+            >
+                <Alert severity="info" sx={{ background: 'rgba(15, 23, 42, 0.9)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    {toastMessage}
+                </Alert>
+            </Snackbar>
+
+            {/* Glassmorphic Footer */}
+            <Footer />
         </div>
-
-    )
+    );
 }
