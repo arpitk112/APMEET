@@ -230,7 +230,7 @@ export default function Authentication() {
                             size="large"
                             shape="pill"
                             text="continue_with"
-                            width="100%"
+                            width="340"
                         />
                     </Box>
 

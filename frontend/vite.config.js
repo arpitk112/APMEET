@@ -7,6 +7,9 @@ export default defineConfig({
   server: {
     host: true, // Listen on 0.0.0.0 (all network addresses)
     port: 5173,
+    headers: {
+      "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
+    },
   },
   build: {
     outDir: 'dist',
