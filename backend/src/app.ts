@@ -17,6 +17,26 @@ app.use(express.urlencoded({ limit: "40kb", extended: true }));
 
 app.use("/api/v1/users", userRoutes);
 
+// Health check endpoint to verify backend service status and uptime
+app.get("/health", (req, res) => {
+    res.status(200).json({
+        status: "ok",
+        service: "AP-MEET backend",
+        message: "Backend is live and healthy",
+        timestamp: new Date().toISOString(),
+        uptimeSeconds: Math.floor(process.uptime())
+    });
+});
+
+app.get("/", (req, res) => {
+    res.status(200).json({
+        status: "ok",
+        service: "AP-MEET backend",
+        message: "Backend server is running",
+        timestamp: new Date().toISOString()
+    });
+});
+
 const start = async (): Promise<void> => {
     app.set("mongo_user", "");
     const mongoUri = process.env.MONGO_URI || "";
