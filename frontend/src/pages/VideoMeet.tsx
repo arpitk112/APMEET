@@ -57,9 +57,6 @@ interface WhiteboardNotification {
 
 const server_url: string = server;
 
-// Active WebRTC connections keyed by peer socket id: { [socketId]: RTCPeerConnection }
-let connections: Record<string, RTCPeerConnection> = {};
-
 // Free Google STUN servers for NAT traversal
 const peerConfigConnections: RTCConfiguration = {
     iceServers: [
@@ -71,10 +68,72 @@ const peerConfigConnections: RTCConfiguration = {
     ]
 };
 
+// Returns a persistent tab session ID to prevent ghost duplicate connections on reload
+const getClientSessionId = (): string => {
+    try {
+        let id = sessionStorage.getItem("apm_client_session_id");
+        if (!id) {
+            id = `client_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+            sessionStorage.setItem("apm_client_session_id", id);
+        }
+        return id;
+    } catch (e) {
+        return `client_${Date.now()}`;
+    }
+};
+
+// Memoized Video Player to prevent reload/flickering on parent re-renders
+interface VideoPlayerProps {
+    stream: MediaStream | null | undefined;
+    className?: string;
+    autoPlay?: boolean;
+    muted?: boolean;
+    playsInline?: boolean;
+    onClick?: () => void;
+}
+
+const VideoPlayer = React.memo(({ stream, className, autoPlay = true, muted = false, playsInline = true, onClick }: VideoPlayerProps) => {
+    const internalVideoRef = useRef<HTMLVideoElement | null>(null);
+
+    useEffect(() => {
+        const video = internalVideoRef.current;
+        if (!video) return;
+
+        if (stream) {
+            if (video.srcObject !== stream) {
+                video.srcObject = stream;
+            }
+            if (video.paused) {
+                video.play().catch((err) => {
+                    if (err.name !== 'AbortError' && err.name !== 'NotAllowedError') {
+                        console.log("Autoplay note:", err);
+                    }
+                });
+            }
+        } else {
+            video.srcObject = null;
+        }
+    }, [stream]);
+
+    return (
+        <video
+            ref={internalVideoRef}
+            className={className}
+            autoPlay={autoPlay}
+            muted={muted}
+            playsInline={playsInline}
+            onClick={onClick}
+        />
+    );
+});
+
 export default function VideoMeetComponent(): React.JSX.Element {
     const socketRef = useRef<Socket | any>(null);
     const socketIdRef = useRef<string | undefined>(undefined);
+    // Peer connections keyed by socket ID, scoped per component lifecycle
+    const connectionsRef = useRef<Record<string, RTCPeerConnection>>({});
     const localVideoRef = useRef<HTMLVideoElement | null>(null);
+    const [localStream, setLocalStream] = useState<MediaStream | null>(null);
 
     const [videoAvailable, setVideoAvailable] = useState<boolean>(true);
     const [audioAvailable, setAudioAvailable] = useState<boolean>(true);
@@ -166,6 +225,7 @@ export default function VideoMeetComponent(): React.JSX.Element {
 
                 if (userMediaStream) {
                     window.localStream = userMediaStream;
+                    setLocalStream(userMediaStream);
                     if (localVideoRef.current) {
                         localVideoRef.current.srcObject = userMediaStream;
                     }
@@ -198,21 +258,22 @@ export default function VideoMeetComponent(): React.JSX.Element {
         }
 
         window.localStream = stream;
+        setLocalStream(stream);
         if (localVideoRef.current) {
             localVideoRef.current.srcObject = stream;
         }
 
-        for (const id in connections) {
+        for (const id in connectionsRef.current) {
             if (id === socketIdRef.current) continue;
 
-            const senders = connections[id].getSenders();
+            const senders = connectionsRef.current[id].getSenders();
 
             stream.getTracks().forEach(track => {
                 const sender = senders.find(s => s.track && s.track.kind === track.kind);
                 if (sender) {
                     sender.replaceTrack(track);
                 } else {
-                    connections[id].addTrack(track, stream);
+                    connectionsRef.current[id].addTrack(track, stream);
                 }
             });
         }
@@ -234,8 +295,8 @@ export default function VideoMeetComponent(): React.JSX.Element {
                 localVideoRef.current.srcObject = window.localStream;
             }
 
-            for (const id in connections) {
-                const senders = connections[id].getSenders();
+            for (const id in connectionsRef.current) {
+                const senders = connectionsRef.current[id].getSenders();
                 window.localStream.getTracks().forEach(t => {
                     const sender = senders.find(s => s.track && s.track.kind === t.kind);
                     if (sender) {
@@ -286,21 +347,89 @@ export default function VideoMeetComponent(): React.JSX.Element {
     }, [audio, video]);
 
     /**
+     * Helper to create or reuse an RTCPeerConnection for a remote peer socket
+     */
+    const createPeerConnection = (peerId: string): RTCPeerConnection => {
+        if (connectionsRef.current[peerId]) {
+            return connectionsRef.current[peerId];
+        }
+
+        const pc = new RTCPeerConnection(peerConfigConnections);
+        connectionsRef.current[peerId] = pc;
+
+        pc.onicecandidate = (event: RTCPeerConnectionIceEvent) => {
+            if (event.candidate != null) {
+                socketRef.current?.emit("signal", peerId, JSON.stringify({ 'ice': event.candidate }));
+            }
+        };
+
+        // Attach remote video track (supports mobile Safari stream fallback)
+        pc.ontrack = (event: RTCTrackEvent) => {
+            const incomingStream = (event.streams && event.streams[0]) ? event.streams[0] : new MediaStream([event.track]);
+            const videoExists = videoRef.current.find(v => v.socketId === peerId);
+
+            if (videoExists) {
+                // Prevent duplicate state update & decoder restart if stream object is already identical
+                if (videoExists.stream === incomingStream) return;
+
+                const updateVideos = videoRef.current.map(v =>
+                    v.socketId === peerId ? { ...v, stream: incomingStream } : v
+                );
+                videoRef.current = updateVideos;
+                setVideos(updateVideos);
+            } else {
+                const newVideo: VideoItem = {
+                    socketId: peerId,
+                    stream: incomingStream,
+                    autoPlay: true,
+                    playsinline: true
+                };
+
+                const updatedVideos = [...videoRef.current, newVideo];
+                videoRef.current = updatedVideos;
+                setVideos(updatedVideos);
+            }
+        };
+
+        if (window.localStream) {
+            window.localStream.getTracks().forEach(track => {
+                pc.addTrack(track, window.localStream!);
+            });
+        } else {
+            const blackSilence = (...args: any[]) => new MediaStream([black(...args), silence()]);
+            window.localStream = blackSilence();
+            window.localStream.getTracks().forEach(track => {
+                pc.addTrack(track, window.localStream!);
+            });
+        }
+
+        return pc;
+    };
+
+    /**
      * WEBRTC SIGNALING MESSAGE DISPATCHER:
      * Receives SDP offers, SDP answers, and ICE candidates routed via Socket.IO.
      */
     const gotMessageFromServer = (fromId: string, messageStr: string): void => {
-        const signal = JSON.parse(messageStr);
+        if (!messageStr) return;
+        let signal: any;
+        try {
+            signal = JSON.parse(messageStr);
+        } catch (e) {
+            return;
+        }
 
-        if (fromId !== socketIdRef.current) {
+        if (fromId !== socketIdRef.current && fromId !== socketRef.current?.id) {
+            const peer = createPeerConnection(fromId);
+
             // 1. Session Description Protocol (SDP) exchange
             if (signal.sdp) {
-                connections[fromId].setRemoteDescription(new RTCSessionDescription(signal.sdp)).then(() => {
+                peer.setRemoteDescription(new RTCSessionDescription(signal.sdp)).then(() => {
                     // If received an offer, create an answer and send back to caller
                     if (signal.sdp.type === "offer") {
-                        connections[fromId].createAnswer().then((description) => {
-                            connections[fromId].setLocalDescription(description).then(() => {
-                                socketRef.current.emit("signal", fromId, JSON.stringify({ "sdp": connections[fromId].localDescription }));
+                        peer.createAnswer().then((description) => {
+                            peer.setLocalDescription(description).then(() => {
+                                socketRef.current?.emit("signal", fromId, JSON.stringify({ "sdp": peer.localDescription }));
                             }).catch(e => console.log(e));
                         }).catch(e => console.log(e));
                     }
@@ -309,7 +438,7 @@ export default function VideoMeetComponent(): React.JSX.Element {
 
             // 2. Interactive Connectivity Establishment (ICE) candidate exchange
             if (signal.ice) {
-                connections[fromId].addIceCandidate(new RTCIceCandidate(signal.ice)).catch(e => console.log(e));
+                peer.addIceCandidate(new RTCIceCandidate(signal.ice)).catch(e => console.log(e));
             }
         }
     };
@@ -348,6 +477,12 @@ export default function VideoMeetComponent(): React.JSX.Element {
 
     // Connects to signaling server and listens for WebRTC & chat events
     const connectToSocketServer = (): void => {
+        if (socketRef.current) {
+            socketRef.current.removeAllListeners();
+            socketRef.current.disconnect();
+            socketRef.current = null;
+        }
+
         socketRef.current = io(server_url);
 
         socketRef.current.on('signal', gotMessageFromServer);
@@ -357,10 +492,14 @@ export default function VideoMeetComponent(): React.JSX.Element {
         socketRef.current.off("chat-message").on("chat-message", addMessage);
 
         socketRef.current.on("connect", () => {
-            // Join room using pathname so localhost and LAN mobile IP land in the same room
-            socketRef.current.emit("join-call", window.location.pathname);
-
             socketIdRef.current = socketRef.current.id;
+
+            // Join room with pathname and client session ID to eliminate duplicate ghost sockets
+            socketRef.current.emit("join-call", {
+                path: window.location.pathname,
+                username: (username || "Guest").trim(),
+                clientId: getClientSessionId()
+            });
 
             // Popup alert when someone starts using the whiteboard
             socketRef.current.off("whiteboard-started").on("whiteboard-started", (senderName: string) => {
@@ -375,70 +514,35 @@ export default function VideoMeetComponent(): React.JSX.Element {
             socketRef.current.off("user-left").on("user-left", (id: string) => {
                 setVideos((vids) => vids.filter((v) => v.socketId !== id));
                 videoRef.current = videoRef.current.filter((v) => v.socketId !== id);
-                if (connections[id]) {
-                    try { connections[id].close(); } catch (e) { }
-                    delete connections[id];
+                if (spotlightVideo === id) {
+                    setSpotlightVideo(null);
+                }
+                if (connectionsRef.current[id]) {
+                    try { connectionsRef.current[id].close(); } catch (e) { }
+                    delete connectionsRef.current[id];
                 }
             });
 
             // Set up WebRTC connection whenever a new user joins
             socketRef.current.off("user-joined").on("user-joined", (id: string, clients: string[]) => {
                 clients.forEach((socketListId: string) => {
-                    connections[socketListId] = new RTCPeerConnection(peerConfigConnections);
+                    // Never connect to self - prevents self-loopback, fake peer cards, and video flickering
+                    if (socketListId === socketIdRef.current || socketListId === socketRef.current?.id) return;
+                    if (connectionsRef.current[socketListId]) return;
 
-                    connections[socketListId].onicecandidate = (event: RTCPeerConnectionIceEvent) => {
-                        if (event.candidate != null) {
-                            socketRef.current.emit("signal", socketListId, JSON.stringify({ 'ice': event.candidate }));
-                        }
-                    };
-
-                    // Attach remote video track (supports mobile Safari stream fallback)
-                    connections[socketListId].ontrack = (event: RTCTrackEvent) => {
-                        const incomingStream = (event.streams && event.streams[0]) ? event.streams[0] : new MediaStream([event.track]);
-                        const videoExists = videoRef.current.find(v => v.socketId === socketListId);
-
-                        if (videoExists) {
-                            const updateVideos = videoRef.current.map(v =>
-                                v.socketId === socketListId ? { ...v, stream: incomingStream } : v
-                            );
-                            videoRef.current = updateVideos;
-                            setVideos(updateVideos);
-                        } else {
-                            const newVideo: VideoItem = {
-                                socketId: socketListId,
-                                stream: incomingStream,
-                                autoPlay: true,
-                                playsinline: true
-                            };
-                            
-                            const updatedVideos = [...videoRef.current, newVideo];
-                            videoRef.current = updatedVideos;
-                            setVideos(updatedVideos);
-                        }
-                    };
-
-                    if (window.localStream !== undefined && window.localStream !== null) {
-                        window.localStream.getTracks().forEach(track => {
-                            connections[socketListId].addTrack(track, window.localStream!);
-                        });
-                    } else {
-                        const blackSilence = (...args: any[]) => new MediaStream([black(...args), silence()]);
-                        window.localStream = blackSilence();
-                        window.localStream.getTracks().forEach(track => {
-                            connections[socketListId].addTrack(track, window.localStream!);
-                        });
-                    }
+                    createPeerConnection(socketListId);
                 });
 
-                if (id === socketIdRef.current) {
-                    for (const id2 in connections) {
-                        if (id2 === socketIdRef.current) continue;
+                // If this client is the newly joined participant, initiate offers to existing peers
+                if (id === socketIdRef.current || id === socketRef.current?.id) {
+                    for (const id2 in connectionsRef.current) {
+                        if (id2 === socketIdRef.current || id2 === socketRef.current?.id) continue;
 
                         try {
-                            connections[id2].createOffer().then((description) => {
-                                connections[id2].setLocalDescription(description)
+                            connectionsRef.current[id2].createOffer().then((description) => {
+                                connectionsRef.current[id2].setLocalDescription(description)
                                     .then(() => {
-                                        socketRef.current.emit("signal", id2, JSON.stringify({ "sdp": connections[id2].localDescription }));
+                                        socketRef.current?.emit("signal", id2, JSON.stringify({ "sdp": connectionsRef.current[id2].localDescription }));
                                     })
                                     .catch(e => console.log(e));
                             });
@@ -495,21 +599,22 @@ export default function VideoMeetComponent(): React.JSX.Element {
         }
 
         window.localStream = stream;
+        setLocalStream(stream);
         if (localVideoRef.current) {
             localVideoRef.current.srcObject = stream;
         }
 
-        for (const id in connections) {
+        for (const id in connectionsRef.current) {
             if (id === socketIdRef.current) continue;
 
-            const senders = connections[id].getSenders();
+            const senders = connectionsRef.current[id].getSenders();
 
             stream.getTracks().forEach(track => {
                 const sender = senders.find(s => s.track && s.track.kind === track.kind);
                 if (sender) {
                     sender.replaceTrack(track);
                 } else {
-                    connections[id].addTrack(track, stream);
+                    connectionsRef.current[id].addTrack(track, stream);
                 }
             });
         }
@@ -607,6 +712,36 @@ export default function VideoMeetComponent(): React.JSX.Element {
         }
     }, [whiteboardNotification.open]);
 
+    // Clean up peer connections, media tracks, and socket on component unmount
+    useEffect(() => {
+        return () => {
+            // Close peer connections
+            for (const id in connectionsRef.current) {
+                try {
+                    connectionsRef.current[id].close();
+                } catch (e) { }
+            }
+            connectionsRef.current = {};
+
+            // Stop local stream tracks
+            if (window.localStream) {
+                try {
+                    window.localStream.getTracks().forEach(t => t.stop());
+                } catch (e) { }
+                window.localStream = undefined;
+            }
+
+            // Disconnect socket
+            if (socketRef.current) {
+                try {
+                    socketRef.current.removeAllListeners();
+                    socketRef.current.disconnect();
+                } catch (e) { }
+                socketRef.current = null;
+            }
+        };
+    }, []);
+
     const handleEndCall = (): void => {
         try {
             if (localVideoRef.current && localVideoRef.current.srcObject) {
@@ -617,19 +752,31 @@ export default function VideoMeetComponent(): React.JSX.Element {
             console.log(e);
         }
 
-        // Close all peer connections
-        for (const id in connections) {
+        // Stop local media stream
+        if (window.localStream) {
             try {
-                connections[id].close();
+                window.localStream.getTracks().forEach(track => track.stop());
+            } catch (e) { }
+            window.localStream = undefined;
+        }
+
+        // Close all peer connections
+        for (const id in connectionsRef.current) {
+            try {
+                connectionsRef.current[id].close();
             } catch (e) {
                 console.log(e);
             }
         }
-        connections = {};
+        connectionsRef.current = {};
 
         // Disconnect socket
         if (socketRef.current) {
-            socketRef.current.disconnect();
+            try {
+                socketRef.current.removeAllListeners();
+                socketRef.current.disconnect();
+            } catch (e) { }
+            socketRef.current = null;
         }
 
         routeTo("/home");
@@ -801,11 +948,12 @@ export default function VideoMeetComponent(): React.JSX.Element {
                                                         <span className={styles.videoOffName}>{username || "You"} (Camera Off)</span>
                                                     </div>
                                                 ) : (
-                                                    <video
+                                                    <VideoPlayer
                                                         className={styles.heroVideoElement}
-                                                        ref={localVideoRef}
+                                                        stream={localStream || window.localStream}
                                                         autoPlay
                                                         muted
+                                                        playsInline
                                                     />
                                                 )}
                                                 <div className={styles.heroNameBadge}>
@@ -818,14 +966,11 @@ export default function VideoMeetComponent(): React.JSX.Element {
                                         // Display Active Remote Participant
                                         return (
                                             <>
-                                                <video
+                                                <VideoPlayer
                                                     className={styles.heroVideoElement}
-                                                    ref={ref => {
-                                                        if (ref && activeRemoteVid.stream) {
-                                                            ref.srcObject = activeRemoteVid.stream;
-                                                        }
-                                                    }}
+                                                    stream={activeRemoteVid.stream}
                                                     autoPlay
+                                                    playsInline
                                                 />
                                                 <div className={styles.heroNameBadge}>
                                                     <span className={styles.activeDot}></span>
@@ -934,11 +1079,12 @@ export default function VideoMeetComponent(): React.JSX.Element {
                                                     onClick={handleLocalVideoClick}
                                                     title="Click to spotlight your video"
                                                 >
-                                                    <video
+                                                    <VideoPlayer
                                                         className={styles.thumbnailVideo}
-                                                        ref={localVideoRef}
+                                                        stream={localStream || window.localStream}
                                                         autoPlay
                                                         muted
+                                                        playsInline
                                                     />
                                                     <div className={styles.thumbnailNameBadge}>
                                                         <span className={styles.activeDot}></span>
@@ -958,14 +1104,11 @@ export default function VideoMeetComponent(): React.JSX.Element {
                                                     onClick={() => handleVideoClick(vid.socketId)}
                                                     title="Click to spotlight this participant"
                                                 >
-                                                    <video
+                                                    <VideoPlayer
                                                         className={styles.thumbnailVideo}
-                                                        ref={ref => {
-                                                            if (ref && vid.stream) {
-                                                                ref.srcObject = vid.stream;
-                                                            }
-                                                        }}
+                                                        stream={vid.stream}
                                                         autoPlay
+                                                        playsInline
                                                     />
                                                     <div className={styles.thumbnailNameBadge}>
                                                         <span className={styles.activeDot}></span>
@@ -999,7 +1142,7 @@ export default function VideoMeetComponent(): React.JSX.Element {
 
                         {/* Right Sidebar (Chat & Participants) */}
                         <div className={`${styles.chatSidebar} ${showModal ? styles.open : ''}`}>
-                            {/* Horizontal Participant Avatars Bar */}
+                            {/* Horizontal Participant Avatars Bar: Real participants only */}
                             <div className={styles.sidebarAvatarsSection}>
                                 <div className={styles.avatarItem} onClick={handleLocalVideoClick} title="You">
                                     <div className={`${styles.avatarCircle} ${styles.avatarCircleYou}`}>
@@ -1009,46 +1152,20 @@ export default function VideoMeetComponent(): React.JSX.Element {
                                     <span className={styles.avatarName}>You</span>
                                 </div>
 
-                                {videos.length > 0 ? (
-                                    videos.map((vid, idx) => (
-                                        <div
-                                            key={vid.socketId}
-                                            className={styles.avatarItem}
-                                            onClick={() => handleVideoClick(vid.socketId)}
-                                            title={`Participant ${idx + 1}`}
-                                        >
-                                            <div className={styles.avatarCircle}>
-                                                {`P${idx + 1}`}
-                                                <span className={styles.avatarStatusDot}></span>
-                                            </div>
-                                            <span className={styles.avatarName}>{`Peer ${idx + 1}`}</span>
+                                {videos.map((vid, idx) => (
+                                    <div
+                                        key={vid.socketId}
+                                        className={styles.avatarItem}
+                                        onClick={() => handleVideoClick(vid.socketId)}
+                                        title={`Participant ${idx + 1}`}
+                                    >
+                                        <div className={styles.avatarCircle}>
+                                            {`P${idx + 1}`}
+                                            <span className={styles.avatarStatusDot}></span>
                                         </div>
-                                    ))
-                                ) : (
-                                    <>
-                                        <div className={styles.avatarItem} onClick={handleCopyInvite} title="Invite William">
-                                            <div className={styles.avatarCircle} style={{ opacity: 0.7 }}>
-                                                W
-                                                <span className={styles.avatarStatusDot} style={{ background: '#94a3b8' }}></span>
-                                            </div>
-                                            <span className={styles.avatarName}>William</span>
-                                        </div>
-                                        <div className={styles.avatarItem} onClick={handleCopyInvite} title="Invite Amel">
-                                            <div className={styles.avatarCircle} style={{ opacity: 0.7 }}>
-                                                A
-                                                <span className={styles.avatarStatusDot} style={{ background: '#94a3b8' }}></span>
-                                            </div>
-                                            <span className={styles.avatarName}>Amel</span>
-                                        </div>
-                                        <div className={styles.avatarItem} onClick={handleCopyInvite} title="Invite Robbert">
-                                            <div className={styles.avatarCircle} style={{ opacity: 0.7 }}>
-                                                R
-                                                <span className={styles.avatarStatusDot} style={{ background: '#94a3b8' }}></span>
-                                            </div>
-                                            <span className={styles.avatarName}>Robbert</span>
-                                        </div>
-                                    </>
-                                )}
+                                        <span className={styles.avatarName}>{`Peer ${idx + 1}`}</span>
+                                    </div>
+                                ))}
                             </div>
 
                             {/* Sidebar Header & Tabs */}

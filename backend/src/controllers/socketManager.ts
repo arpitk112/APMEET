@@ -9,11 +9,12 @@ export interface ChatMessage {
     timestamp: string;
 }
 
-// Stores room participants, chat history, and whiteboard strokes in memory
+// Stores room participants, chat history, whiteboard strokes, and client sessions in memory
 const connections: Record<string, string[]> = {};
 const messages: Record<string, ChatMessage[]> = {};
 const timeOnLine: Record<string, Date> = {};
 const whiteboardData: Record<string, any[]> = {};
+const clientSessionMap: Record<string, string> = {};
 
 export const connectToSocket = (server: HTTPServer): SocketIOServer => {
     const io = new SocketIOServer(server, {
@@ -39,17 +40,61 @@ export const connectToSocket = (server: HTTPServer): SocketIOServer => {
         console.log("Client connected:", socket.id);
 
         // User joins a room - send them existing chat & whiteboard history
-        socket.on("join-call", (rawPath: string) => {
+        socket.on("join-call", (payload: any) => {
+            let rawPath: string = "";
+            let username: string = "";
+            let clientId: string = "";
+
+            if (typeof payload === "string") {
+                rawPath = payload;
+            } else if (payload && typeof payload === "object") {
+                rawPath = payload.path || "";
+                username = payload.username || "";
+                clientId = payload.clientId || "";
+            }
+
             const path = normalizeRoom(rawPath);
-            console.log(`Socket ${socket.id} joined room: ${path}`);
+            console.log(`Socket ${socket.id} joined room: ${path} (user: ${username || 'anonymous'}, client: ${clientId || 'unknown'})`);
 
             if (connections[path] === undefined) {
                 connections[path] = [];
             }
-            connections[path].push(socket.id);
+
+            // 1. Prune dead sockets that are no longer connected
+            connections[path] = connections[path].filter(id => {
+                const s = io.sockets.sockets.get(id);
+                return s && s.connected;
+            });
+
+            // 2. Prune previous stale socket from the same client session in this room
+            if (clientId) {
+                const staleIds = connections[path].filter(id => {
+                    return id !== socket.id && clientSessionMap[id] === clientId;
+                });
+
+                staleIds.forEach(staleId => {
+                    console.log(`Pruning older socket ${staleId} for client session ${clientId}`);
+                    const staleSocket = io.sockets.sockets.get(staleId);
+                    if (staleSocket) {
+                        try { staleSocket.disconnect(true); } catch (e) { }
+                    }
+                    connections[path] = connections[path].filter(id => id !== staleId);
+                    connections[path].forEach(id => {
+                        io.to(id).emit("user-left", staleId);
+                    });
+                    delete clientSessionMap[staleId];
+                    delete timeOnLine[staleId];
+                });
+
+                clientSessionMap[socket.id] = clientId;
+            }
+
+            if (!connections[path].includes(socket.id)) {
+                connections[path].push(socket.id);
+            }
             timeOnLine[socket.id] = new Date();
 
-            // Tell all users in the room about the new participant
+            // Tell all users in the room about the updated participant list
             for (let a = 0; a < connections[path].length; a++) {
                 io.to(connections[path][a]).emit("user-joined", socket.id, connections[path]);
             }
@@ -186,13 +231,17 @@ export const connectToSocket = (server: HTTPServer): SocketIOServer => {
 
         // Cleans up when a user disconnects, and frees room memory if empty
         socket.on("disconnect", () => {
+            delete clientSessionMap[socket.id];
+            delete timeOnLine[socket.id];
+
             for (const [room, users] of Object.entries(connections)) {
                 if (users.includes(socket.id)) {
-                    users.forEach(id => {
+                    connections[room] = users.filter(id => id !== socket.id);
+
+                    // Notify remaining users in the room
+                    connections[room].forEach(id => {
                         io.to(id).emit("user-left", socket.id);
                     });
-
-                    connections[room] = users.filter(id => id !== socket.id);
 
                     // Delete room data once all users leave
                     if (connections[room].length === 0) {
@@ -205,8 +254,6 @@ export const connectToSocket = (server: HTTPServer): SocketIOServer => {
                     break;
                 }
             }
-
-            delete timeOnLine[socket.id];
         });
     });
 

@@ -285,6 +285,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 .heroVideoElement {
@@ -293,6 +296,9 @@
     object-fit: cover;
     background: #000;
     display: block;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 /* Fallback card when video is muted/disabled */
@@ -547,6 +553,9 @@
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     cursor: pointer;
     transition: all 0.25s ease;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 .thumbnailCard:hover {
@@ -566,6 +575,9 @@
     object-fit: cover;
     display: block;
     background: #000;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 .thumbnailNameBadge {
