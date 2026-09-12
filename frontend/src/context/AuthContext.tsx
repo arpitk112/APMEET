@@ -63,6 +63,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
             if (request.status === HttpStatusCode.Ok) {
                 localStorage.setItem("token", request.data.token);
+                if (request.data.user) {
+                    setUserData(request.data.user);
+                    localStorage.setItem("user", JSON.stringify(request.data.user));
+                } else {
+                    const fallbackUser = { name: username, username };
+                    setUserData(fallbackUser);
+                    localStorage.setItem("user", JSON.stringify(fallbackUser));
+                }
                 router("/home");
             }
         } catch (err) {

@@ -1,1405 +1,1676 @@
 /* =========================================================================
-   AP-MEET VIDEO CALL & LOBBY GLASSMORPHISM STYLES (VideoComponent.module.css)
-   Inspired by modern dark dashboard conferencing UI
+   AP-MEET: GOOGLE MEET-INSPIRED RESPONSIVE UI (VideoComponent.module.css)
+   Tailored to AP-MEET's dark navy glassmorphic brand aesthetic
    ========================================================================= */
 
-/* ================= Main Meeting Container ================= */
-.meetVideoContainer {
+/* Main Fullscreen Meeting Container */
+.meetContainer {
     height: 100vh;
     width: 100vw;
-    background: radial-gradient(circle at 50% 0%, #0c1538 0%, #060913 75%);
+    background: radial-gradient(circle at 50% 10%, #0d152c 0%, #060913 75%);
     color: #ffffff;
-    position: relative;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
-    padding: 16px 24px;
+    position: relative;
+    overflow: hidden;
+    padding: 10px 16px 14px 16px;
     box-sizing: border-box;
     font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* ================= Top Navigation Bar ================= */
-.topNavBar {
-    height: 52px;
-    min-height: 52px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    z-index: 20;
-}
-
-.navLeft {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.brandLogoBadge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    background: linear-gradient(135deg, #0A21C0 0%, #2563eb 100%);
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(10, 33, 192, 0.45);
-    color: #ffffff;
-}
-
-.brandLogoGlow {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: #ffffff;
-    box-shadow: 0 0 10px #60a5fa, 0 0 20px #3b82f6;
-}
-
-.navBrandTitle {
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: #ffffff;
-    letter-spacing: -0.2px;
-}
-
-.navTopicBadge {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: #cbd5e1;
-    margin-left: 8px;
-}
-
-.topicBullet {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #3b82f6;
-    box-shadow: 0 0 8px #3b82f6;
-}
-
-.navRight {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-}
-
-.navIconBtn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.06) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    color: #94a3b8 !important;
-    transition: all 0.25s ease !important;
-}
-
-.navIconBtn:hover {
-    background: rgba(255, 255, 255, 0.12) !important;
-    color: #ffffff !important;
-    transform: translateY(-1px);
-}
-
-.navUserAvatar {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #1e293b, #334155);
-    border: 2px solid #2563eb;
-    box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #ffffff;
-    position: relative;
-    cursor: pointer;
-}
-
-.navUserStatusDot {
-    position: absolute;
-    bottom: -1px;
-    right: -1px;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: #10b981;
-    border: 2px solid #060913;
-}
-
-/* ================= Sub-Header Ribbon ================= */
-.subHeaderRibbon {
+/* ================= Top Bar ================= */
+.topBar {
     height: 44px;
     min-height: 44px;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 12px;
+    padding: 0 4px;
     z-index: 20;
 }
 
-.subHeaderLeft {
+.topBarLeft {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
+    min-width: 0;
+    flex-shrink: 1;
 }
 
-.reminderLabel {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #ffffff;
-    letter-spacing: -0.2px;
+.liveClock {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: #cbd5e1;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
-.meetingPill {
-    display: inline-flex;
+.topDivider {
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.meetingCodePill {
+    display: flex;
     align-items: center;
-    gap: 10px;
-    background: rgba(30, 41, 59, 0.7);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 6px 12px;
-    transition: all 0.25s ease;
+    gap: 6px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: #94a3b8;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
-.meetingPill:hover {
+.meetingCodePill:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
     border-color: rgba(255, 255, 255, 0.2);
 }
 
-.meetingPillTitle {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: #e2e8f0;
+.topInfoBtn {
+    color: #94a3b8 !important;
+    padding: 4px !important;
 }
 
-.meetingPillTime {
-    background: linear-gradient(135deg, #0A21C0 0%, #2563eb 100%);
-    color: #ffffff;
-    padding: 3px 8px;
-    border-radius: 8px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    box-shadow: 0 2px 8px rgba(10, 33, 192, 0.4);
+.topInfoBtn:hover {
+    color: #ffffff !important;
 }
 
-.subHeaderRight {
+.topBarRight {
     display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.inviteBtn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    padding: 6px 14px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: #cbd5e1;
-    cursor: pointer;
-    transition: all 0.25s ease;
-}
-
-.inviteBtn:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.25);
-    color: #ffffff;
-}
-
-.invitePillCount {
-    background: #2563eb;
-    color: #ffffff;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.72rem;
-    font-weight: 600;
-}
-
-.statBadge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.85rem;
-    color: #94a3b8;
-}
-
-.statPillCount {
-    background: #0ea5e9;
-    color: #ffffff;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.7rem;
-    font-weight: 600;
-}
-
-/* ================= Main Call Body (2-Column Grid) ================= */
-.callMainBody {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    gap: 20px;
-    position: relative;
-    overflow: hidden;
-}
-
-/* ================= Left Stage (Hero Video + Thumbnails) ================= */
-.videoStage {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    height: 100%;
-    position: relative;
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Hero Active Speaker Video Card */
-.heroVideoCard {
-    flex: 1;
-    min-height: 0;
-    position: relative;
-    border-radius: 22px;
-    overflow: hidden;
-    background: #080d1e;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    transform: translateZ(0);
-}
-
-.heroVideoElement {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    background: #000;
-    display: block;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    transform: translateZ(0);
-}
-
-/* Fallback card when video is muted/disabled */
-.videoOffPlaceholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 50% 50%, #17203a 0%, #090e1f 100%);
-}
-
-.videoOffAvatar {
-    width: 88px;
-    height: 88px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #1e293b, #3b82f6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.2rem;
-    font-weight: 600;
-    color: #ffffff;
-    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.35);
-    border: 3px solid rgba(255, 255, 255, 0.15);
-}
-
-.videoOffName {
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: #cbd5e1;
-}
-
-/* Top-Left Name Overlay Badge */
-.heroNameBadge {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-    padding: 6px 14px;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    z-index: 10;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-}
-
-.activeDot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #3b82f6;
-    box-shadow: 0 0 8px #3b82f6;
-}
-
-/* Top-Right LIVE / Timer Badge */
-.heroLiveBadge {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-    padding: 6px 12px;
-    border-radius: 10px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    z-index: 10;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-}
-
-.recDot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #ef4444;
-    box-shadow: 0 0 8px #ef4444;
-    animation: pulseDot 1.5s infinite;
-}
-
-@keyframes pulseDot {
-    0% { transform: scale(0.95); opacity: 0.8; }
-    50% { transform: scale(1.25); opacity: 1; }
-    100% { transform: scale(0.95); opacity: 0.8; }
-}
-
-/* Left Vertical Audio Volume Bar */
-.heroVolumeBar {
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 20px;
-    padding: 12px 8px;
-    display: flex;
-    flex-direction: column;
     align-items: center;
     gap: 10px;
-    z-index: 10;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
-.volumeSliderTrack {
-    width: 4px;
-    height: 64px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-}
-
-.volumeSliderFill {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: #3b82f6;
-    border-radius: 4px;
-    box-shadow: 0 0 8px #3b82f6;
-    transition: height 0.15s ease;
-}
-
-/* Floating In-Call Control Pill Bar */
-.heroControlDock {
-    position: absolute;
-    bottom: 22px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(15, 23, 42, 0.82);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 999px;
-    padding: 8px 18px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    z-index: 30;
-    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.6), 0 0 25px rgba(37, 99, 235, 0.15);
-    transition: all 0.3s ease;
-}
-
-.heroControlDock:hover {
-    border-color: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 20px 55px rgba(0, 0, 0, 0.7), 0 0 30px rgba(37, 99, 235, 0.25);
-}
-
-.dockBtn {
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    background: rgba(255, 255, 255, 0.08) !important;
-    color: #ffffff !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.22s ease !important;
-}
-
-.dockBtn:hover {
-    background: rgba(255, 255, 255, 0.18) !important;
-    transform: translateY(-2px);
-    border-color: rgba(255, 255, 255, 0.3) !important;
-}
-
-.dockBtnOff {
-    background: rgba(239, 68, 68, 0.2) !important;
-    border-color: rgba(239, 68, 68, 0.4) !important;
-    color: #fca5a5 !important;
-}
-
-.dockBtnOff:hover {
-    background: rgba(239, 68, 68, 0.35) !important;
-    color: #ffffff !important;
-}
-
-.dockBtnActive {
-    background: linear-gradient(135deg, #0A21C0, #2563eb) !important;
-    border-color: transparent !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 16px rgba(10, 33, 192, 0.5) !important;
-}
-
-.dockEndCallBtn {
-    width: 60px;
-    height: 46px;
-    border-radius: 24px;
-    border: none !important;
-    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
-    color: #ffffff !important;
-    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.55) !important;
-    transition: all 0.22s ease !important;
-}
-
-.dockEndCallBtn:hover {
-    transform: translateY(-2px) scale(1.04);
-    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.75) !important;
-    filter: brightness(1.1);
-}
-
-/* ================= Bottom Participant Thumbnails Strip ================= */
-.thumbnailsRow {
-    height: 125px;
-    min-height: 125px;
-    display: flex;
-    gap: 14px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding-bottom: 2px;
-}
-
-.thumbnailsRow::-webkit-scrollbar {
-    height: 5px;
-}
-
-.thumbnailsRow::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 4px;
-}
-
-.thumbnailCard {
-    flex: 1;
-    min-width: 170px;
-    max-width: 250px;
-    height: 100%;
-    border-radius: 16px;
-    position: relative;
-    overflow: hidden;
-    background: #080d1e;
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-    cursor: pointer;
-    transition: all 0.25s ease;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    transform: translateZ(0);
-}
-
-.thumbnailCard:hover {
-    border-color: #2563eb;
-    transform: translateY(-2px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), 0 0 15px rgba(37, 99, 235, 0.3);
-}
-
-.thumbnailActiveSpotlight {
-    border-color: #3b82f6 !important;
-    box-shadow: 0 0 18px rgba(59, 130, 246, 0.5) !important;
-}
-
-.thumbnailVideo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    background: #000;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    transform: translateZ(0);
-}
-
-.thumbnailNameBadge {
-    position: absolute;
-    bottom: 8px;
-    left: 8px;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(8px);
-    color: #ffffff;
-    padding: 3px 8px;
-    border-radius: 6px;
-    font-size: 0.72rem;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    pointer-events: none;
-    z-index: 5;
-}
-
-.thumbnailMicBadge {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ffffff;
-    z-index: 5;
-}
-
-/* ================= Right Sidebar (Chat & Participants) ================= */
-.chatSidebar {
-    width: 350px;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    background: rgba(15, 23, 42, 0.68);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 22px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
-    overflow: hidden;
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease;
-}
-
-/* Participant Avatars Horizontal Row at Top of Sidebar */
-.sidebarAvatarsSection {
-    padding: 18px 18px 12px;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    gap: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.avatarItem {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-}
-
-.avatarItem:hover {
-    transform: translateY(-2px);
-}
-
-.avatarCircle {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #ffffff;
-    position: relative;
-}
-
-.avatarCircleYou {
-    border-color: #2563eb;
-    box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
-}
-
-.avatarStatusDot {
-    position: absolute;
-    bottom: -1px;
-    right: -1px;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #10b981;
-    border: 2px solid #0f172a;
-}
-
-.avatarName {
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: #cbd5e1;
-    max-width: 60px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* Chat Title & Tabs */
-.sidebarNav {
-    padding: 14px 18px 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.sidebarTitleRow {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.sidebarTitle {
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: #ffffff;
-    letter-spacing: -0.3px;
-}
-
-.sidebarCloseBtn {
-    background: none;
-    border: none;
-    color: #94a3b8;
-    cursor: pointer;
-    font-size: 1.1rem;
-    display: none; /* Shown on mobile */
-}
-
-.sidebarTabs {
-    display: flex;
-    gap: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    padding-bottom: 8px;
-}
-
-.sidebarTab {
-    background: none;
-    border: none;
-    font-size: 0.88rem;
-    font-weight: 500;
-    color: #94a3b8;
-    cursor: pointer;
-    padding: 4px 0;
-    position: relative;
-    transition: color 0.2s ease;
-}
-
-.sidebarTab:hover {
-    color: #ffffff;
-}
-
-.sidebarTabActive {
-    color: #3b82f6 !important;
-    font-weight: 600;
-}
-
-.sidebarTabActive::after {
-    content: '';
-    position: absolute;
-    bottom: -9px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: #3b82f6;
-    border-radius: 2px;
-    box-shadow: 0 0 8px #3b82f6;
-}
-
-/* Chat Messages Feed */
-.chatMessagesFeed {
-    flex: 1;
-    min-height: 0;
-    padding: 14px 18px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.chatMessagesFeed::-webkit-scrollbar {
-    width: 4px;
-}
-
-.chatMessagesFeed::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 4px;
-}
-
-.emptyChatPrompt {
-    text-align: center;
-    color: #64748b;
-    font-size: 0.85rem;
-    margin: auto 0;
-    padding: 20px;
-}
-
-/* Chat Message Row */
-.msgRow {
-    display: flex;
-    gap: 10px;
-    max-width: 88%;
-}
-
-.msgRowSelf {
-    align-self: flex-end;
-    flex-direction: row-reverse;
-}
-
-.msgAvatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #1e293b, #334155);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #ffffff;
-    flex-shrink: 0;
-}
-
-.msgBubbleContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
-
-.msgSenderName {
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: #94a3b8;
-}
-
-.msgBubble {
-    padding: 10px 14px;
-    border-radius: 14px;
-    font-size: 0.88rem;
-    line-height: 1.45;
-    word-break: break-word;
-}
-
-.msgBubbleOther {
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #f1f5f9;
-    border-top-left-radius: 4px;
-}
-
-.msgBubbleSelf {
-    background: linear-gradient(135deg, #0A21C0 0%, #2563eb 100%);
-    color: #ffffff;
-    box-shadow: 0 4px 14px rgba(10, 33, 192, 0.35);
-    border-top-right-radius: 4px;
-}
-
-.msgMeta {
-    font-size: 0.68rem;
-    color: #64748b;
+.securityBadge {
     display: flex;
     align-items: center;
     gap: 4px;
-}
-
-.msgMetaSelf {
-    align-self: flex-end;
-    color: #94a3b8;
-}
-
-/* Typing indicator */
-.typingIndicator {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #34d399;
+    padding: 3px 8px;
+    border-radius: 999px;
     font-size: 0.75rem;
-    color: #94a3b8;
-    font-style: italic;
-    padding: 0 4px;
+    font-weight: 600;
 }
 
-/* Bottom Input Dock */
-.sidebarInputDock {
-    padding: 12px 16px 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+.participantCountBadge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #1e293b;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    padding: 3px 10px 3px 4px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.participantCountBadge:hover {
+    background: #27354f;
+}
+
+.badgeAvatarCircle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0A21C0 0%, #2563eb 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.topWhiteboardBtn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.topWhiteboardBtn:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* ================= Main Meeting Stage ================= */
+.mainStage {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+    margin: 6px 0;
+}
+
+/* Video Stage Area */
+.videoStage {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* 1 Participant: Full Stage Card with 16:9 aspect ratio to avoid over-zooming */
+.gridSingle {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.gridSingle .videoTile {
+    width: 100%;
+    max-width: 1280px;
+    height: 100%;
+    max-height: calc(100vh - 170px);
+    aspect-ratio: 16 / 9;
+}
+
+/* 2 Participants: Google Meet 50/50 Side-by-Side Split */
+.gridDouble {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.gridDouble .videoTile {
+    flex: 1;
+    max-width: calc(50% - 8px);
+    height: 100%;
+    max-height: calc(100vh - 170px);
+    aspect-ratio: 16 / 9;
+}
+
+/* 3+ Participants: Responsive Equal Grid */
+.gridMulti {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 14px;
+    align-content: center;
+    justify-items: center;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.gridMulti .videoTile {
+    width: 100%;
+    max-height: calc(50vh - 70px);
+    aspect-ratio: 16 / 9;
+}
+
+/* Google Meet Video Tile Card */
+.videoTile {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #090e1f;
+    border: 2px solid transparent;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+/* Google Meet Active Speaker Highlight */
+.videoTileActiveSpeaker {
+    border-color: #60a5fa !important;
+    box-shadow: 0 0 20px rgba(96, 165, 250, 0.35) !important;
+}
+
+/* Tile Video Stream Element */
+.tileVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    background: #000;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: scaleX(-1) translateZ(0);
+}
+
+/* Horizontally mirrored for all video tiles */
+.tileVideoSelf,
+.tileVideoMirrored {
+    transform: scaleX(-1) translateZ(0) !important;
+}
+
+.tileVideoUnmirrored {
+    transform: scaleX(1) translateZ(0) !important;
+}
+
+/* Camera Off Google Meet Centered Initial Avatar */
+.cameraOffTile {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: radial-gradient(circle at 50% 50%, #151d38 0%, #080c1d 100%);
+}
+
+.cameraOffAvatar {
+    width: 105px;
+    height: 105px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #a21caf 0%, #701a75 100%);
+    box-shadow: 0 10px 28px rgba(162, 28, 175, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.8rem;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: -1px;
+    user-select: none;
+}
+
+.avatarVariantBlue {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+    box-shadow: 0 10px 28px rgba(37, 99, 235, 0.4) !important;
+}
+
+.avatarVariantTeal {
+    background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%) !important;
+    box-shadow: 0 10px 28px rgba(13, 148, 136, 0.4) !important;
+}
+
+.avatarVariantAmber {
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%) !important;
+    box-shadow: 0 10px 28px rgba(217, 119, 6, 0.4) !important;
+}
+
+/* Tile Hover Action Menu (Pin, Three-Dots) */
+.tileHoverActions {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(12px);
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.videoTile:hover .tileHoverActions {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.tileActionBtn {
+    background: transparent;
+    border: none;
+    color: #cbd5e1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 50%;
+    transition: color 0.15s ease, background 0.15s ease;
+}
+
+.tileActionBtn:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Tile Bottom-Left Name Badge */
+.tileNameBadge {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(8px);
+    color: #ffffff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+    z-index: 8;
+    max-width: 70%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hostTag {
+    font-size: 0.68rem;
+    background: #2563eb;
+    color: #fff;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Tile Top-Right Mic Muted Badge */
+.tileMicBadge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(239, 68, 68, 0.85);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(6px);
+    z-index: 8;
+}
+
+/* Hand Raised Badge on Tile */
+.tileHandBadge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(245, 158, 11, 0.9);
+    color: #ffffff;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    z-index: 8;
+    animation: bounce 1s infinite alternate;
+}
+
+@keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-4px); }
+}
+
+/* Floating Picture-in-Picture Self View (Screenshot 3/4) */
+.floatingSelfPiP {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    width: 220px;
+    height: 132px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #0d152c;
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75);
+    z-index: 15;
+    cursor: pointer;
+    transition: transform 0.22s ease, border-color 0.22s ease;
+}
+
+.floatingSelfPiP:hover {
+    transform: scale(1.03);
+    border-color: #3b82f6;
+}
+
+.floatingPiPMaximizeHint {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-size: 0.68rem;
+    color: #cbd5e1;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    pointer-events: none;
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
+}
+
+.floatingSelfPiP:hover .floatingPiPMaximizeHint {
+    opacity: 1;
+    color: #60a5fa;
+    border-color: #3b82f6;
+}
+
+/* ================= Google Meet Spotlight / Maximized Mode ================= */
+.spotlightLayout {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+.spotlightHero {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #090e1f;
+    border: 2px solid transparent;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    width: 100%;
+    max-width: 1300px;
+    height: 100%;
+    max-height: calc(100vh - 170px);
+    aspect-ratio: 16 / 9;
+    flex: 1;
+}
+
+.spotlightHeroActiveSpeaker {
+    border-color: #60a5fa !important;
+    box-shadow: 0 0 24px rgba(96, 165, 250, 0.4) !important;
+}
+
+.spotlightUnpinBtn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    z-index: 15;
+    transition: all 0.2s ease;
+}
+
+.spotlightUnpinBtn:hover {
+    background: rgba(37, 99, 235, 0.85);
+    border-color: #60a5fa;
+    transform: scale(1.03);
+}
+
+.spotlightFilmstrip {
+    display: flex;
+    gap: 10px;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.spotlightFilmstrip::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.spotlightFilmstrip::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.minimizedTile {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #0d152c;
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.minimizedTile:hover {
+    transform: scale(1.03);
+    border-color: #3b82f6;
+    box-shadow: 0 10px 28px rgba(37, 99, 235, 0.35);
+}
+
+.minimizedTileActiveSpeaker {
+    border-color: #60a5fa !important;
+}
+
+/* More Options / Meeting Details Drawer */
+.moreOptionsList {
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.moreOptionItem {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.moreOptionItem:hover {
+    background: rgba(255, 255, 255, 0.09);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.moreOptionIconWrap {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.moreOptionInfo {
+    flex: 1;
+    min-width: 0;
+}
+
+.moreOptionTitle {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #ffffff;
+}
+
+.moreOptionSub {
+    font-size: 0.74rem;
+    color: #94a3b8;
+    margin-top: 2px;
+}
+
+.moreOptionCard {
+    margin-top: 8px;
+    padding: 14px;
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+}
+
+.moreOptionCardHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: #cbd5e1;
+}
+
+.ctrlBtnDesktopOnly {
+    display: inline-flex;
+}
+
+@media (min-width: 769px) {
+    .spotlightLayout {
+        flex-direction: row;
+    }
+
+    .spotlightHero {
+        flex: 1;
+        min-width: 0;
+        height: 100%;
+    }
+
+    .spotlightFilmstrip {
+        width: 230px;
+        min-width: 200px;
+        max-width: 260px;
+        height: 100%;
+        flex-direction: column;
+        padding-right: 4px;
+    }
+
+    .minimizedTile {
+        width: 100%;
+        height: 136px;
+    }
+}
+
+/* ================= Bottom Toolbar (Google Meet Center Dock + Right Toggles) ================= */
+.bottomBar {
+    height: 64px;
+    min-height: 64px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6px;
+    z-index: 25;
+}
+
+.bottomLeft {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 180px;
+}
+
+.bottomMeetingCode {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #cbd5e1;
+}
+
+/* Center Pill Dock of Circular Action Buttons */
+.bottomCenterDock {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.inputFieldWrapper {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 14px;
-    padding: 4px 12px;
-    transition: all 0.2s ease;
-}
-
-.inputFieldWrapper:focus-within {
-    border-color: #3b82f6;
-    background: rgba(255, 255, 255, 0.09);
-    box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
-}
-
-.messageTextInput {
-    width: 100%;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: #ffffff;
-    font-size: 0.88rem;
-    padding: 8px 0;
-    font-family: inherit;
-}
-
-.messageTextInput::placeholder {
-    color: #64748b;
-}
-
-.inputActionBtn {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #0A21C0 0%, #2563eb 100%) !important;
+.ctrlBtn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #202b42 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
     color: #ffffff !important;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: none !important;
-    cursor: pointer;
     transition: all 0.2s ease !important;
-    box-shadow: 0 3px 10px rgba(10, 33, 192, 0.4) !important;
+    cursor: pointer;
 }
 
-.inputActionBtn:hover:not(:disabled) {
-    transform: scale(1.06);
-    filter: brightness(1.1);
+.ctrlBtn:hover {
+    background: #2a3856 !important;
+    transform: translateY(-1px);
 }
 
-.inputActionBtn:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-    box-shadow: none !important;
+.ctrlBtnOff {
+    background: #ea4335 !important;
+    color: #ffffff !important;
+    border-color: #ef4444 !important;
 }
 
-/* Participants List Tab View */
-.participantsListFeed {
-    flex: 1;
-    min-height: 0;
-    padding: 14px 18px;
-    overflow-y: auto;
+.ctrlBtnOff:hover {
+    background: #dc2626 !important;
+}
+
+.ctrlBtnActive {
+    background: #2563eb !important;
+    color: #ffffff !important;
+    border-color: #3b82f6 !important;
+}
+
+.ctrlBtnHandActive {
+    background: #f59e0b !important;
+    color: #ffffff !important;
+    border-color: #d97706 !important;
+}
+
+/* Distinctive Red Pill End Call Button */
+.endCallPillBtn {
+    width: 64px;
+    height: 44px;
+    border-radius: 22px;
+    background: #ea4335 !important;
+    color: #ffffff !important;
+    border: none !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(234, 67, 53, 0.45);
+    transition: all 0.2s ease !important;
+}
+
+.endCallPillBtn:hover {
+    background: #dc2626 !important;
+    transform: scale(1.04);
+}
+
+/* Bottom Right Panel Toggles */
+.bottomRightToggles {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 180px;
+    justify-content: flex-end;
+}
+
+.drawerToggleBtn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: transparent !important;
+    color: #94a3b8 !important;
+    transition: all 0.2s ease !important;
+}
+
+.drawerToggleBtn:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #ffffff !important;
+}
+
+.drawerToggleBtnActive {
+    background: rgba(37, 99, 235, 0.2) !important;
+    color: #60a5fa !important;
+}
+
+/* ================= Side Drawers (Chat, People, Host Controls) ================= */
+.sideDrawer {
+    position: fixed;
+    top: 10px;
+    right: 14px;
+    bottom: 84px;
+    width: 360px;
+    background: rgba(13, 21, 40, 0.95);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    z-index: 40;
+    animation: drawerSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
 }
 
-.participantItem {
+@keyframes drawerSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.drawerHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 12px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.drawerTitle {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.drawerCloseBtn {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    border-radius: 50%;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s ease, background 0.15s ease;
+}
+
+.drawerCloseBtn:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* In-Call Messages: Host Permission Toggle (Screenshot 1) */
+.hostChatSwitchRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 0.84rem;
+    color: #cbd5e1;
+}
+
+/* Continuous Chat Disclaimer Alert (Screenshot 1) */
+.chatDisclaimerBox {
+    margin: 14px 18px 8px 18px;
+    padding: 12px 14px;
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    font-size: 0.78rem;
+    color: #94a3b8;
+    line-height: 1.45;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.chatDisclaimerHeader {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    color: #cbd5e1;
+}
+
+/* Empty Chat Illustration (Screenshot 1) */
+.chatEmptyState {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    gap: 14px;
+    color: #94a3b8;
+    text-align: center;
+}
+
+.emptyIllustrationSvg {
+    width: 140px;
+    height: 140px;
+}
+
+.chatEmptyState p {
+    font-size: 0.92rem;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Chat Messages Feed */
+.chatMessagesList {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.chatMsgItem {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-width: 85%;
+}
+
+.chatMsgSelf {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.chatMsgOther {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.chatMsgMeta {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    display: flex;
+    gap: 6px;
+}
+
+.chatMsgBubble {
+    padding: 8px 14px;
+    border-radius: 14px;
+    font-size: 0.88rem;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.chatMsgSelf .chatMsgBubble {
+    background: linear-gradient(135deg, #0A21C0 0%, #2563eb 100%);
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+}
+
+.chatMsgOther .chatMsgBubble {
+    background: #1e293b;
+    color: #f1f5f9;
+    border-bottom-left-radius: 4px;
+}
+
+/* Capsule Message Input Dock */
+.chatInputDock {
+    padding: 12px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(9, 14, 28, 0.8);
+}
+
+.chatInputCapsule {
+    flex: 1;
+    background: #1e293b;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    padding: 10px 16px;
+    color: #ffffff;
+    font-size: 0.88rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.chatInputCapsule:focus {
+    border-color: #3b82f6;
+}
+
+.chatInputCapsule::placeholder {
+    color: #64748b;
+}
+
+.chatSendBtn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    background: #2563eb;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.chatSendBtn:hover:not(:disabled) {
+    background: #1d4ed8;
+    transform: scale(1.05);
+}
+
+.chatSendBtn:disabled {
+    background: #1e293b;
+    color: #475569;
+    cursor: not-allowed;
+}
+
+/* ================= People Drawer ================= */
+.peopleListFeed {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.peopleItem {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 10px 12px;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background 0.2s ease;
 }
 
-.participantItemInfo {
+.peopleItem:hover {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.peopleInfo {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-.participantItemName {
+.peopleAvatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1e293b, #334155);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.peopleName {
     font-size: 0.88rem;
     font-weight: 500;
     color: #f1f5f9;
 }
 
-.participantItemRole {
+.peopleRole {
     font-size: 0.72rem;
-    color: #3b82f6;
-}
-
-/* ================= Whiteboard Notification Popup ================= */
-.whiteboardNotificationBanner {
-    position: absolute;
-    top: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 200;
-    max-width: 520px;
-    width: 90%;
-    animation: slideDownNotification 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@keyframes slideDownNotification {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -20px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translate(-50%, 0) scale(1);
-    }
-}
-
-.whiteboardNotificationContent {
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 12px 18px;
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 16px;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(249, 115, 22, 0.2);
-}
-
-.whiteboardIconPill {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
-    background: rgba(249, 115, 22, 0.15);
-    border: 1px solid rgba(249, 115, 22, 0.3);
-    border-radius: 10px;
-    flex-shrink: 0;
-}
-
-.whiteboardNotificationText {
-    flex: 1;
-    min-width: 0;
-}
-
-.whiteboardNotificationText p {
-    margin: 0;
-    font-size: 0.88rem;
-    color: #ffffff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.whiteboardNotificationText span {
-    font-size: 0.75rem;
     color: #94a3b8;
 }
 
-.whiteboardNotificationAction {
-    padding: 6px 14px;
-    border-radius: 10px;
-    border: 1px solid rgba(249, 115, 22, 0.4);
-    background: linear-gradient(135deg, #ea580c, #c2410c);
-    color: #ffffff;
-    font-size: 0.8rem;
+.peopleActions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.kickBtn {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
     font-weight: 600;
     cursor: pointer;
-    white-space: nowrap;
     transition: all 0.2s ease;
 }
 
-.whiteboardNotificationAction:hover {
-    transform: translateY(-1px);
-    filter: brightness(1.1);
+.kickBtn:hover {
+    background: #ef4444;
+    color: #ffffff;
 }
 
-.whiteboardNotificationClose {
-    background: none;
-    border: none;
+/* ================= Host Knocking Toast ================= */
+.knockToast {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.7), 0 0 25px rgba(59, 130, 246, 0.2);
+    border-radius: 14px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 100;
+    animation: dropIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dropIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+.knockText p {
+    margin: 0;
+    font-size: 0.92rem;
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.knockText span {
+    font-size: 0.78rem;
     color: #94a3b8;
-    font-size: 1rem;
+}
+
+.knockActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admitBtn {
+    background: #2563eb;
+    border: none;
+    color: #ffffff;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
     cursor: pointer;
-    padding: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    transition: background 0.15s ease;
 }
 
-.whiteboardNotificationProgressBar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #f97316, #fb923c);
-    width: 100%;
-    animation: notificationProgress 6s linear forwards;
+.admitBtn:hover {
+    background: #1d4ed8;
 }
 
-@keyframes notificationProgress {
-    from { width: 100%; }
-    to { width: 0%; }
+.denyBtn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #cbd5e1;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
 }
 
-/* ================= Lobby Screen Styles ================= */
-.lobbyContainer {
-    position: relative;
-    min-height: 100vh;
+.denyBtn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}
+
+/* ================= Guest Waiting Lobby Screen ================= */
+.waitingLobbyContainer {
+    height: 100vh;
     width: 100vw;
-    background: radial-gradient(circle at 50% 35%, #151a30 0%, #0a0d18 80%);
+    background: radial-gradient(circle at 50% 20%, #0d1733 0%, #060913 80%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.waitingCard {
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    padding: 36px 32px;
+    max-width: 440px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.waitingPulseDot {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0A21C0 0%, #2563eb 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    box-shadow: 0 0 25px rgba(37, 99, 235, 0.5);
+    animation: pulseGlow 1.8s infinite ease-in-out;
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
+    }
+    50% {
+        transform: scale(1.08);
+        box-shadow: 0 0 35px rgba(37, 99, 235, 0.8);
+    }
+}
+
+.waitingCard h2 {
+    margin: 0;
+    font-size: 1.35rem;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.waitingCard p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #94a3b8;
+    line-height: 1.5;
+}
+
+/* ================= Reactions Popup & Animated Floating Particles ================= */
+.reactionsPopup {
+    position: absolute;
+    bottom: 74px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 999px;
+    padding: 6px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+    z-index: 30;
+    animation: dropIn 0.2s ease;
+}
+
+.reactionEmojiBtn {
+    background: transparent;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.reactionEmojiBtn:hover {
+    transform: scale(1.3);
+}
+
+.floatingParticle {
+    position: fixed;
+    bottom: 80px;
+    font-size: 2.2rem;
+    pointer-events: none;
+    z-index: 100;
+    animation: floatParticle 3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes floatParticle {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(0.6);
+    }
+    50% {
+        opacity: 0.9;
+        transform: translateY(-200px) scale(1.1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-400px) scale(1.2);
+    }
+}
+
+/* ================= Pre-join Lobby Card ================= */
+.lobbyContainer {
+    height: 100vh;
+    width: 100vw;
+    background: radial-gradient(circle at 50% 10%, #0c1538 0%, #060913 75%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
     overflow: hidden;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .lobbyGlow {
     position: absolute;
     width: 500px;
     height: 500px;
-    border-radius: 50%;
-    background: rgba(99, 102, 241, 0.15);
-    filter: blur(120px);
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, rgba(10, 33, 192, 0) 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     pointer-events: none;
 }
 
 .lobbyCard {
-    position: relative;
-    z-index: 10;
-    background: rgba(15, 23, 42, 0.65);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.12);
-    padding: 2.5rem;
-    border-radius: 28px;
-    width: 100%;
+    border-radius: 24px;
+    padding: 36px;
     max-width: 480px;
+    width: 100%;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 40px rgba(37, 99, 235, 0.12);
+    z-index: 10;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55);
+    gap: 20px;
 }
 
 .lobbyHeader {
+    text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
-    text-align: center;
+    gap: 8px;
 }
 
 .lobbyBrandLogo {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #0A21C0 0%, #2563eb 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
-    background: linear-gradient(135deg, #0A21C0, #1A34E8);
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(10, 33, 192, 0.4);
+    box-shadow: 0 8px 25px rgba(10, 33, 192, 0.5);
+    margin-bottom: 4px;
 }
 
-.lobbyCard h2 {
-    font-size: 1.6rem;
+.lobbyHeader h2 {
+    font-size: 1.5rem;
     font-weight: 700;
+    margin: 0;
     color: #ffffff;
     letter-spacing: -0.5px;
 }
 
 .lobbySubtitle {
-    color: #B3B4BD;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
+    color: #94a3b8;
+    margin: 0;
 }
 
 .lobbyVideoWrapper {
-    position: relative;
     width: 100%;
-    border-radius: 18px;
+    height: 220px;
+    border-radius: 16px;
     overflow: hidden;
+    position: relative;
     background: #000;
-    border: 1px solid rgba(179, 180, 189, 0.2);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .lobbyVideo {
     width: 100%;
-    aspect-ratio: 16 / 9;
+    height: 100%;
     object-fit: cover;
-    display: block;
+    transform: scaleX(-1);
+    transition: transform 0.2s ease;
 }
 
 .lobbyVideoBadge {
     position: absolute;
-    bottom: 12px;
-    left: 12px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(44, 46, 58, 0.75);
+    bottom: 10px;
+    left: 10px;
+    background: rgba(15, 23, 42, 0.85);
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(179, 180, 189, 0.2);
-    color: #B3B4BD;
+    color: #ffffff;
     padding: 4px 10px;
     border-radius: 8px;
-    font-size: 0.75rem;
+    font-size: 0.78rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lobbyMirrorBtn {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #f1f5f9;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.72rem;
     font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.lobbyMirrorBtn:hover {
+    background: rgba(59, 130, 246, 0.6);
+    border-color: rgba(96, 165, 250, 0.4);
+}
+
+.tileMirrorBtn {
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #cbd5e1;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-left: 6px;
+    transition: all 0.2s ease;
+}
+
+.tileMirrorBtn:hover {
+    background: rgba(59, 130, 246, 0.8);
+    color: #ffffff;
+    transform: scale(1.08);
 }
 
 .lobbyLiveDot {
-    width: 7px;
-    height: 7px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: #10b981;
-    box-shadow: 0 0 6px #10b981;
+    box-shadow: 0 0 8px #10b981;
 }
 
 .lobbyActions {
-    width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 1.15rem;
+    gap: 14px;
 }
 
 .lobbyJoinBtn {
-    background: linear-gradient(135deg, #0A21C0 0%, #1A34E8 100%) !important;
-    color: #ffffff !important;
-    border-radius: 14px !important;
     padding: 12px 24px !important;
-    font-size: 1rem !important;
+    background: linear-gradient(135deg, #0A21C0 0%, #2563eb 100%) !important;
     font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4) !important;
     text-transform: none !important;
-    box-shadow: 0 8px 25px rgba(10, 33, 192, 0.4) !important;
-    transition: all 0.25s ease !important;
 }
 
-.lobbyJoinBtn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(10, 33, 192, 0.6) !important;
-    filter: brightness(1.1);
+.lobbyJoinBtn:hover {
+    background: linear-gradient(135deg, #091da8 0%, #1d4ed8 100%) !important;
+    box-shadow: 0 12px 30px rgba(37, 99, 235, 0.6) !important;
 }
 
-/* =========================================================================
-   RESPONSIVE MEDIA QUERIES (Multi-screens: Desktop, Tablet, Mobile)
-   ========================================================================= */
-
-/* Large screens (>= 1200px) */
-@media (min-width: 1200px) {
-    .chatSidebar {
-        width: 360px;
-    }
-}
-
-/* Medium & Small Laptops / Tablets (769px to 1199px) */
-@media (max-width: 1199px) and (min-width: 769px) {
-    .meetVideoContainer {
-        padding: 12px 16px;
-    }
-    .chatSidebar {
-        width: 320px;
-    }
-    .heroNameBadge, .heroLiveBadge {
-        top: 14px;
-    }
-    .thumbnailsRow {
-        height: 110px;
-        min-height: 110px;
-    }
-    .thumbnailCard {
-        min-width: 145px;
-    }
-}
-
-/* Mobile & Small Tablets (<= 768px) */
+/* ================= Responsive Mobile Styles ================= */
 @media (max-width: 768px) {
-    .meetVideoContainer {
-        padding: 8px 10px;
+    .meetContainer {
+        padding: 6px 8px;
     }
 
-    .topNavBar {
-        height: 46px;
-        min-height: 46px;
-        margin-bottom: 6px;
+    .topBar {
+        height: 40px;
+        min-height: 40px;
+        padding: 0 2px;
     }
 
-    .navBrandTitle {
-        font-size: 0.95rem;
-    }
-
-    .navTopicBadge {
-        font-size: 0.82rem;
-        max-width: 160px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    .subHeaderRibbon {
-        height: auto;
-        min-height: auto;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 10px;
-    }
-
-    .reminderLabel {
-        font-size: 0.88rem;
-    }
-
-    .meetingPill {
-        padding: 4px 8px;
+    .topBarLeft {
         gap: 6px;
+        min-width: 0;
+        flex-shrink: 1;
     }
 
-    .meetingPillTitle {
+    .liveClock {
+        font-size: 0.8rem;
+    }
+
+    .meetingCodePill {
         font-size: 0.78rem;
+        padding: 3px 6px;
+        gap: 4px;
     }
 
-    .inviteBtn {
-        padding: 4px 10px;
-        font-size: 0.78rem;
+    .topBarRight {
+        gap: 6px;
+        flex-shrink: 0;
     }
 
-    .statBadge {
-        display: none; /* Conserve space */
+    .securityBadge {
+        display: none !important;
     }
 
-    .heroVolumeBar {
-        display: none; /* Save space on mobile */
+    .participantCountBadge {
+        padding: 2px 8px 2px 3px;
+        font-size: 0.75rem;
     }
 
-    .heroControlDock {
-        bottom: 12px;
-        padding: 6px 14px;
+    .badgeAvatarCircle {
+        width: 22px;
+        height: 22px;
+        font-size: 0.65rem;
+    }
+
+    .topWhiteboardBtn {
+        width: 30px;
+        height: 30px;
+    }
+
+    .gridDouble {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+    }
+
+    .bottomBar {
+        height: 60px;
+        min-height: 60px;
+        padding: 0 4px;
+        justify-content: center;
+    }
+
+    .bottomLeft {
+        display: none !important;
+    }
+
+    .bottomRightToggles {
+        display: none !important;
+    }
+
+    .bottomCenterDock {
+        width: 100%;
+        justify-content: center;
         gap: 8px;
     }
 
-    .dockBtn {
+    .ctrlBtnDesktopOnly {
+        display: none !important;
+    }
+
+    .ctrlBtn {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+    }
+
+    .endCallPillBtn {
+        width: 52px;
+        height: 44px;
+        min-width: 52px;
+    }
+
+    .floatingSelfPiP {
+        width: 130px;
+        height: 85px;
+        bottom: 12px;
+        right: 12px;
+    }
+
+    .spotlightLayout {
+        flex-direction: column;
+    }
+
+    .spotlightHero {
+        flex: 1;
+        min-height: 0;
+        width: 100%;
+    }
+
+    .spotlightFilmstrip {
+        height: 105px;
+        min-height: 105px;
+        width: 100%;
+        flex-direction: row;
+        padding-bottom: 2px;
+    }
+
+    .minimizedTile {
+        width: 135px;
+        height: 100%;
+    }
+
+    .sideDrawer {
+        top: auto;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        width: 100%;
+        height: 68vh;
+        border-radius: 20px 20px 0 0;
+    }
+}
+
+@media (max-width: 380px) {
+    .bottomCenterDock {
+        gap: 5px;
+    }
+
+    .ctrlBtn {
         width: 40px;
         height: 40px;
+        min-width: 40px;
     }
 
-    .dockEndCallBtn {
-        width: 50px;
+    .endCallPillBtn {
+        width: 46px;
         height: 40px;
+        min-width: 46px;
     }
 
-    .thumbnailsRow {
-        height: 95px;
-        min-height: 95px;
-        gap: 10px;
-    }
-
-    .thumbnailCard {
-        min-width: 130px;
-        max-width: 180px;
-    }
-
-    /* Floating / Slide-up overlay Chat Sidebar on Mobile */
-    .chatSidebar {
-        position: fixed;
-        right: 0;
-        bottom: 0;
-        top: 0;
-        width: 100%;
-        max-width: 100vw;
-        border-radius: 0;
-        z-index: 100;
-        transform: translateY(100%);
-    }
-
-    .chatSidebar.open {
-        transform: translateY(0);
-    }
-
-    .sidebarCloseBtn {
-        display: block;
-    }
-}
-
-/* Compact Smartphones (<= 480px) */
-@media (max-width: 480px) {
-    .navTopicBadge {
+    .topDivider {
         display: none;
     }
-    .heroControlDock {
-        padding: 5px 10px;
-        gap: 6px;
+
+    .liveClock {
+        font-size: 0.74rem;
     }
-    .dockBtn {
-        width: 36px;
-        height: 36px;
-    }
-    .dockEndCallBtn {
-        width: 44px;
-        height: 36px;
-    }
-    .thumbnailCard {
-        min-width: 110px;
-    }
-    .heroNameBadge {
-        font-size: 0.75rem;
-        padding: 4px 8px;
-        top: 10px;
-        left: 10px;
-    }
-    .heroLiveBadge {
-        font-size: 0.75rem;
-        padding: 4px 8px;
-        top: 10px;
-        right: 10px;
+
+    .meetingCodePill {
+        font-size: 0.72rem;
     }
 }

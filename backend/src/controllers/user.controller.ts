@@ -94,7 +94,16 @@ const login = async (req: Request, res: Response): Promise<Response | void> => {
 
             user.token = token;
             await user.save();
-            return res.status(httpStatus.OK).json({ token: token });
+            return res.status(httpStatus.OK).json({
+                token: token,
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    username: user.username,
+                    email: user.email,
+                    avatar: user.avatar
+                }
+            });
         } else {
             return res.status(httpStatus.UNAUTHORIZED).json({ message: "Invalid username or password" });
         }
