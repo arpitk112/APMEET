@@ -30,6 +30,8 @@ import LockIcon from "@mui/icons-material/Lock";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import PushPinIcon from "@mui/icons-material/PushPin";
 import DevicesIcon from "@mui/icons-material/Devices";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Whiteboard from "../components/Whiteboard";
 import { useNavigate } from "react-router-dom";
 import server from "../environment";
@@ -207,6 +209,28 @@ export default function VideoMeetComponent(): React.JSX.Element {
     const [raisedHands, setRaisedHands] = useState<Record<string, boolean>>({});
     const [showReactionsPicker, setShowReactionsPicker] = useState<boolean>(false);
     const [reactions, setReactions] = useState<ReactionItem[]>([]);
+
+    // 3-Second countdown timer for host admit prompt
+    const [knockCountdown, setKnockCountdown] = useState<number>(3);
+    const knockTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+    // Responsive mobile detection & 2-user slider state
+    const [isMobile, setIsMobile] = useState<boolean>(() => {
+        if (typeof window !== 'undefined') {
+            return window.innerWidth <= 768;
+        }
+        return false;
+    });
+    const [mobileSlideIdx, setMobileSlideIdx] = useState<number>(0);
+    const touchStartX = useRef<number | null>(null);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const routeTo = useNavigate();
 
@@ -834,13 +858,41 @@ export default function VideoMeetComponent(): React.JSX.Element {
         setMessage("");
     };
 
+    // 3-second countdown timer on the admit option when a participant knocks
+    useEffect(() => {
+        if (isHost && pendingKnocks.length > 0) {
+            setKnockCountdown(3);
+            const targetCandidate = pendingKnocks[0];
+
+            if (knockTimerRef.current) clearInterval(knockTimerRef.current);
+
+            let remaining = 3;
+            knockTimerRef.current = setInterval(() => {
+                remaining -= 1;
+                setKnockCountdown(remaining);
+                if (remaining <= 0) {
+                    if (knockTimerRef.current) clearInterval(knockTimerRef.current);
+                    handleAdmit(targetCandidate.socketId);
+                }
+            }, 1000);
+
+            return () => {
+                if (knockTimerRef.current) clearInterval(knockTimerRef.current);
+            };
+        } else {
+            if (knockTimerRef.current) clearInterval(knockTimerRef.current);
+        }
+    }, [isHost, pendingKnocks[0]?.socketId]);
+
     // Host actions
     const handleAdmit = (targetSocketId: string): void => {
+        if (knockTimerRef.current) clearInterval(knockTimerRef.current);
         socketRef.current?.emit("admit-user", targetSocketId);
         setPendingKnocks(prev => prev.filter(k => k.socketId !== targetSocketId));
     };
 
     const handleDeny = (targetSocketId: string): void => {
+        if (knockTimerRef.current) clearInterval(knockTimerRef.current);
         socketRef.current?.emit("deny-user", targetSocketId);
         setPendingKnocks(prev => prev.filter(k => k.socketId !== targetSocketId));
     };
@@ -1120,19 +1172,25 @@ export default function VideoMeetComponent(): React.JSX.Element {
                 </div>
             </div>
 
-            {/* Host Knocking Prompt Banner */}
+            {/* Host Knocking Prompt Banner with 3-second auto-admit timer */}
             {isHost && pendingKnocks.length > 0 && (
                 <div className={styles.knockToast}>
+                    <div className={styles.knockToastProgressBar}>
+                        <div
+                            className={styles.knockToastProgressFill}
+                            style={{ width: `${(knockCountdown / 3) * 100}%` }}
+                        />
+                    </div>
                     <div className={styles.knockText}>
                         <p><strong>{pendingKnocks[0].username}</strong> wants to join this call</p>
-                        <span>Someone is waiting outside the meeting</span>
+                        <span>Auto-admitting in <span className={styles.knockCountdownBadge}>{knockCountdown}s</span></span>
                     </div>
                     <div className={styles.knockActions}>
                         <button className={styles.denyBtn} onClick={() => handleDeny(pendingKnocks[0].socketId)}>
                             Deny
                         </button>
                         <button className={styles.admitBtn} onClick={() => handleAdmit(pendingKnocks[0].socketId)}>
-                            Admit
+                            Admit ({knockCountdown}s)
                         </button>
                     </div>
                 </div>
@@ -1433,7 +1491,218 @@ export default function VideoMeetComponent(): React.JSX.Element {
                             );
                         }
 
-                        // 4. 3+ Participants: Multi-Grid with floating self-view
+                        // 4. 3+ Participants:
+                        // On Mobile Screens: 2 users per slide stacked Up & Down with Slider
+                        if (isMobile) {
+                            const allMeetingParticipants: Array<{
+                                type: 'local' | 'remote';
+                                socketId: string;
+                                username: string;
+                                stream?: MediaStream;
+                                isHost?: boolean;
+                            }> = [
+                                {
+                                    type: 'local',
+                                    socketId: 'local',
+                                    username: username || "You",
+                                    stream: localStream || window.localStream,
+                                    isHost: isHost
+                                },
+                                ...videos.map(p => ({
+                                    type: 'remote' as const,
+                                    socketId: p.socketId,
+                                    username: p.username || "Participant",
+                                    stream: p.stream,
+                                    isHost: false
+                                }))
+                            ];
+
+                            const totalSlides = Math.ceil(allMeetingParticipants.length / 2);
+                            const safeSlideIdx = Math.min(mobileSlideIdx, Math.max(0, totalSlides - 1));
+                            const currentPair = allMeetingParticipants.slice(safeSlideIdx * 2, safeSlideIdx * 2 + 2);
+
+                            return (
+                                <div
+                                    className={styles.mobileSliderContainer}
+                                    onTouchStart={(e) => {
+                                        touchStartX.current = e.touches[0].clientX;
+                                    }}
+                                    onTouchEnd={(e) => {
+                                        if (touchStartX.current !== null) {
+                                            const diff = touchStartX.current - e.changedTouches[0].clientX;
+                                            if (diff > 45 && safeSlideIdx < totalSlides - 1) {
+                                                setMobileSlideIdx(safeSlideIdx + 1);
+                                            } else if (diff < -45 && safeSlideIdx > 0) {
+                                                setMobileSlideIdx(safeSlideIdx - 1);
+                                            }
+                                            touchStartX.current = null;
+                                        }
+                                    }}
+                                >
+                                    {/* Previous Slide Button */}
+                                    {safeSlideIdx > 0 && (
+                                        <button
+                                            type="button"
+                                            className={`${styles.sliderNavBtn} ${styles.sliderNavPrev}`}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setMobileSlideIdx(safeSlideIdx - 1);
+                                            }}
+                                            title="Previous 2 participants"
+                                        >
+                                            <ChevronLeftIcon style={{ fontSize: 24 }} />
+                                        </button>
+                                    )}
+
+                                    {/* Next Slide Button */}
+                                    {safeSlideIdx < totalSlides - 1 && (
+                                        <button
+                                            type="button"
+                                            className={`${styles.sliderNavBtn} ${styles.sliderNavNext}`}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setMobileSlideIdx(safeSlideIdx + 1);
+                                            }}
+                                            title="Next 2 participants"
+                                        >
+                                            <ChevronRightIcon style={{ fontSize: 24 }} />
+                                        </button>
+                                    )}
+
+                                    {/* Two Users Stacked Up and Down */}
+                                    <div className={styles.mobileSliderSlide}>
+                                        {currentPair.map((p) => {
+                                            if (p.type === 'local') {
+                                                return (
+                                                    <div
+                                                        key="local"
+                                                        className={styles.videoTile}
+                                                        onClick={() => setSpotlightVideo('local')}
+                                                        style={{ cursor: 'pointer' }}
+                                                        title="Click to maximize your video"
+                                                    >
+                                                        {video === false ? (
+                                                            <div className={styles.cameraOffTile}>
+                                                                <div className={`${styles.cameraOffAvatar} ${styles.avatarVariantBlue}`}>
+                                                                    {(username || "U").substring(0, 2).toUpperCase()}
+                                                                </div>
+                                                            </div>
+                                                        ) : (
+                                                            <VideoPlayer
+                                                                className={`${styles.tileVideo} ${styles.tileVideoSelf}`}
+                                                                stream={localStream || window.localStream}
+                                                                muted
+                                                            />
+                                                        )}
+
+                                                        <div className={styles.tileHoverActions}>
+                                                            <button
+                                                                className={styles.tileActionBtn}
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setSpotlightVideo('local');
+                                                                }}
+                                                                title="Maximize your video"
+                                                            >
+                                                                <PushPinIcon style={{ fontSize: 18 }} />
+                                                            </button>
+                                                        </div>
+
+                                                        <div className={styles.tileNameBadge}>
+                                                            <span>{username || "You"} (You)</span>
+                                                            {isHost && <span className={styles.hostTag}>Host</span>}
+                                                        </div>
+
+                                                        {!audio && (
+                                                            <div className={styles.tileMicBadge} title="Microphone muted">
+                                                                <MicOffIcon style={{ fontSize: 15 }} />
+                                                            </div>
+                                                        )}
+
+                                                        {handRaised && (
+                                                            <div className={styles.tileHandBadge}>
+                                                                <PanToolIcon style={{ fontSize: 14 }} />
+                                                                <span>Hand raised</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            } else {
+                                                return (
+                                                    <div
+                                                        key={p.socketId}
+                                                        className={styles.videoTile}
+                                                        onClick={() => setSpotlightVideo(p.socketId)}
+                                                        style={{ cursor: 'pointer' }}
+                                                        title="Click to maximize participant"
+                                                    >
+                                                        <VideoPlayer
+                                                            className={styles.tileVideo}
+                                                            stream={p.stream}
+                                                        />
+
+                                                        <div className={styles.tileHoverActions}>
+                                                            <button
+                                                                className={styles.tileActionBtn}
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setSpotlightVideo(p.socketId);
+                                                                }}
+                                                                title="Maximize participant"
+                                                            >
+                                                                <PushPinIcon style={{ fontSize: 18 }} />
+                                                            </button>
+                                                            {isHost && (
+                                                                <button
+                                                                    className={styles.tileActionBtn}
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        handleRemoveUser(p.socketId);
+                                                                    }}
+                                                                    title="Remove participant"
+                                                                    style={{ color: '#ef4444' }}
+                                                                >
+                                                                    <PersonRemoveIcon style={{ fontSize: 18 }} />
+                                                                </button>
+                                                            )}
+                                                        </div>
+
+                                                        <div className={styles.tileNameBadge}>
+                                                            <span>{p.username || "Participant"}</span>
+                                                        </div>
+
+                                                        {raisedHands[p.socketId] && (
+                                                            <div className={styles.tileHandBadge}>
+                                                                <PanToolIcon style={{ fontSize: 14 }} />
+                                                                <span>Hand raised</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            }
+                                        })}
+                                    </div>
+
+                                    {/* Slider Pagination Dots and Counter */}
+                                    {totalSlides > 1 && (
+                                        <div className={styles.sliderPaginationBar}>
+                                            {Array.from({ length: totalSlides }).map((_, sIdx) => (
+                                                <span
+                                                    key={sIdx}
+                                                    className={sIdx === safeSlideIdx ? styles.sliderDotActive : styles.sliderDot}
+                                                    onClick={() => setMobileSlideIdx(sIdx)}
+                                                />
+                                            ))}
+                                            <span className={styles.sliderPageCounter}>
+                                                {safeSlideIdx + 1} / {totalSlides}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        }
+
+                        // On Desktop: Equal Multi-Grid with floating self-view
                         return (
                             <div className={styles.gridMulti}>
                                 {videos.map((peer, idx) => (
