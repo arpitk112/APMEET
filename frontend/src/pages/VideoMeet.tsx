@@ -210,8 +210,9 @@ export default function VideoMeetComponent(): React.JSX.Element {
     const [showReactionsPicker, setShowReactionsPicker] = useState<boolean>(false);
     const [reactions, setReactions] = useState<ReactionItem[]>([]);
 
-    // 3-Second countdown timer for host admit prompt
+    // 3-Second countdown timer for host admit prompt auto-dismiss
     const [knockCountdown, setKnockCountdown] = useState<number>(3);
+    const [activeKnockToast, setActiveKnockToast] = useState<KnockCandidate | null>(null);
     const knockTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     // Responsive mobile detection & 2-user slider state
@@ -594,6 +595,8 @@ export default function VideoMeetComponent(): React.JSX.Element {
                     if (prev.some(k => k.socketId === candidate.socketId)) return prev;
                     return [...prev, candidate];
                 });
+                // Trigger 3-second popup toast for host
+                setActiveKnockToast(candidate);
             });
 
             // Candidate admitted by host
@@ -858,11 +861,12 @@ export default function VideoMeetComponent(): React.JSX.Element {
         setMessage("");
     };
 
-    // 3-second countdown timer on the admit option when a participant knocks
+    // 3-second countdown timer for the popup toast:
+    // Only closes the popup toast so it doesn't block the screen; DOES NOT auto-admit!
+    // The candidate stays in pendingKnocks so the host can decide in the People drawer at any time.
     useEffect(() => {
-        if (isHost && pendingKnocks.length > 0) {
+        if (isHost && activeKnockToast) {
             setKnockCountdown(3);
-            const targetCandidate = pendingKnocks[0];
 
             if (knockTimerRef.current) clearInterval(knockTimerRef.current);
 
@@ -872,7 +876,8 @@ export default function VideoMeetComponent(): React.JSX.Element {
                 setKnockCountdown(remaining);
                 if (remaining <= 0) {
                     if (knockTimerRef.current) clearInterval(knockTimerRef.current);
-                    handleAdmit(targetCandidate.socketId);
+                    // Dismiss the popup only; candidate remains in pendingKnocks (People drawer)
+                    setActiveKnockToast(null);
                 }
             }, 1000);
 
@@ -882,17 +887,23 @@ export default function VideoMeetComponent(): React.JSX.Element {
         } else {
             if (knockTimerRef.current) clearInterval(knockTimerRef.current);
         }
-    }, [isHost, pendingKnocks[0]?.socketId]);
+    }, [isHost, activeKnockToast?.socketId]);
 
     // Host actions
     const handleAdmit = (targetSocketId: string): void => {
         if (knockTimerRef.current) clearInterval(knockTimerRef.current);
+        if (activeKnockToast?.socketId === targetSocketId) {
+            setActiveKnockToast(null);
+        }
         socketRef.current?.emit("admit-user", targetSocketId);
         setPendingKnocks(prev => prev.filter(k => k.socketId !== targetSocketId));
     };
 
     const handleDeny = (targetSocketId: string): void => {
         if (knockTimerRef.current) clearInterval(knockTimerRef.current);
+        if (activeKnockToast?.socketId === targetSocketId) {
+            setActiveKnockToast(null);
+        }
         socketRef.current?.emit("deny-user", targetSocketId);
         setPendingKnocks(prev => prev.filter(k => k.socketId !== targetSocketId));
     };
@@ -1172,8 +1183,8 @@ export default function VideoMeetComponent(): React.JSX.Element {
                 </div>
             </div>
 
-            {/* Host Knocking Prompt Banner with 3-second auto-admit timer */}
-            {isHost && pendingKnocks.length > 0 && (
+            {/* Host Knocking Prompt Banner with 3-second auto-close timer (candidate remains in People section) */}
+            {isHost && activeKnockToast && (
                 <div className={styles.knockToast}>
                     <div className={styles.knockToastProgressBar}>
                         <div
@@ -1182,15 +1193,25 @@ export default function VideoMeetComponent(): React.JSX.Element {
                         />
                     </div>
                     <div className={styles.knockText}>
-                        <p><strong>{pendingKnocks[0].username}</strong> wants to join this call</p>
-                        <span>Auto-admitting in <span className={styles.knockCountdownBadge}>{knockCountdown}s</span></span>
+                        <p><strong>{activeKnockToast.username}</strong> wants to join this call</p>
+                        <span>Popup closing in <span className={styles.knockCountdownBadge}>{knockCountdown}s</span></span>
                     </div>
                     <div className={styles.knockActions}>
-                        <button className={styles.denyBtn} onClick={() => handleDeny(pendingKnocks[0].socketId)}>
+                        <button className={styles.denyBtn} onClick={() => handleDeny(activeKnockToast.socketId)}>
                             Deny
                         </button>
-                        <button className={styles.admitBtn} onClick={() => handleAdmit(pendingKnocks[0].socketId)}>
-                            Admit ({knockCountdown}s)
+                        <button className={styles.admitBtn} onClick={() => handleAdmit(activeKnockToast.socketId)}>
+                            Admit
+                        </button>
+                        <button
+                            className={styles.knockCloseBtn}
+                            onClick={() => {
+                                if (knockTimerRef.current) clearInterval(knockTimerRef.current);
+                                setActiveKnockToast(null);
+                            }}
+                            title="Dismiss popup"
+                        >
+                            <CloseIcon style={{ fontSize: 16 }} />
                         </button>
                     </div>
                 </div>
