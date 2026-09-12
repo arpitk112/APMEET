@@ -1838,3 +1838,432 @@
         font-size: 0.72rem;
     }
 }
+
+/* =========================================================================
+   THEME TOGGLE & DAY / LIGHT MODE OVERRIDES
+   Night mode preserves 100% of AP-MEET's dark navy glassmorphic brand palette.
+   Day mode applies a crisp, clean Google Meet-inspired light theme.
+   ========================================================================= */
+
+/* Theme Toggle Button */
+.themeToggleBtn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.themeToggleBtn:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.14);
+    transform: scale(1.06);
+}
+
+.lobbyThemeToggleWrap {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    z-index: 50;
+}
+
+/* Day Mode Main Meeting Container */
+.meetContainer.dayMode {
+    background: radial-gradient(circle at 50% 10%, #ffffff 0%, #edf2f7 85%);
+    color: #0f172a;
+}
+
+.meetContainer.dayMode .topBar {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.meetContainer.dayMode .liveClock {
+    color: #334155;
+}
+
+.meetContainer.dayMode .topDivider {
+    color: rgba(0, 0, 0, 0.16);
+}
+
+.meetContainer.dayMode .meetingCodePill {
+    color: #334155;
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.meetContainer.dayMode .meetingCodePill:hover {
+    color: #0f172a;
+    background: rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+.meetContainer.dayMode .topInfoBtn {
+    color: #64748b !important;
+}
+
+.meetContainer.dayMode .topInfoBtn:hover {
+    color: #0f172a !important;
+}
+
+.meetContainer.dayMode .participantCountBadge {
+    background: #e2e8f0;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #0f172a;
+}
+
+.meetContainer.dayMode .participantCountBadge:hover {
+    background: #cbd5e1;
+}
+
+.meetContainer.dayMode .topWhiteboardBtn {
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #475569;
+}
+
+.meetContainer.dayMode .topWhiteboardBtn:hover {
+    background: rgba(0, 0, 0, 0.08);
+    color: #0f172a;
+}
+
+.meetContainer.dayMode .themeToggleBtn {
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #475569;
+}
+
+.meetContainer.dayMode .themeToggleBtn:hover {
+    background: rgba(0, 0, 0, 0.08);
+    color: #0f172a;
+    transform: scale(1.06);
+}
+
+/* Video Stage & Tiles in Day Mode */
+.meetContainer.dayMode .videoTile {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.09);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.meetContainer.dayMode .audioOnlyContainer {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+.meetContainer.dayMode .videoInfoOverlay {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: #0f172a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.meetContainer.dayMode .videoNameText {
+    color: #0f172a;
+}
+
+.meetContainer.dayMode .videoTileHoverActions {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.meetContainer.dayMode .tileActionBtn {
+    color: #475569;
+}
+
+.meetContainer.dayMode .tileActionBtn:hover {
+    color: #0f172a;
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.meetContainer.dayMode .spotlightTile {
+    border-color: #2563eb;
+    box-shadow: 0 0 25px rgba(37, 99, 235, 0.25);
+}
+
+.meetContainer.dayMode .minimizedTile {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Mobile Slider in Day Mode */
+.meetContainer.dayMode .sliderChevronBtn {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #1e293b;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.meetContainer.dayMode .sliderChevronBtn:hover:not(:disabled) {
+    background: #ffffff;
+    color: #0f172a;
+}
+
+.meetContainer.dayMode .sliderDots .sliderDot {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.meetContainer.dayMode .sliderDots .sliderDotActive {
+    background: #2563eb;
+}
+
+/* Bottom Controls in Day Mode */
+.meetContainer.dayMode .bottomMeetingCode {
+    color: #475569;
+}
+
+.meetContainer.dayMode .ctrlBtn {
+    background: #ffffff !important;
+    border: 1px solid rgba(0, 0, 0, 0.12) !important;
+    color: #1e293b !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.meetContainer.dayMode .ctrlBtn:hover {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+}
+
+.meetContainer.dayMode .ctrlBtnOff {
+    background: #ea4335 !important;
+    color: #ffffff !important;
+    border-color: #ef4444 !important;
+}
+
+.meetContainer.dayMode .ctrlBtnOff:hover {
+    background: #dc2626 !important;
+}
+
+.meetContainer.dayMode .ctrlBtnActive {
+    background: #2563eb !important;
+    color: #ffffff !important;
+    border-color: #3b82f6 !important;
+}
+
+.meetContainer.dayMode .drawerToggleBtn {
+    color: #64748b !important;
+}
+
+.meetContainer.dayMode .drawerToggleBtn:hover {
+    background: rgba(0, 0, 0, 0.06) !important;
+    color: #0f172a !important;
+}
+
+.meetContainer.dayMode .drawerToggleBtnActive {
+    background: rgba(37, 99, 235, 0.12) !important;
+    color: #2563eb !important;
+}
+
+/* Side Drawers in Day Mode */
+.meetContainer.dayMode .sideDrawer {
+    background: rgba(255, 255, 255, 0.97);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.14);
+    color: #0f172a;
+}
+
+.meetContainer.dayMode .drawerHeader {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.meetContainer.dayMode .drawerTitle {
+    color: #0f172a;
+}
+
+.meetContainer.dayMode .drawerCloseBtn {
+    color: #64748b;
+}
+
+.meetContainer.dayMode .drawerCloseBtn:hover {
+    color: #0f172a;
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.meetContainer.dayMode .drawerTabs {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.meetContainer.dayMode .drawerTab {
+    color: #64748b;
+}
+
+.meetContainer.dayMode .drawerTabActive {
+    color: #2563eb;
+    border-bottom-color: #2563eb;
+}
+
+/* People & Host items in Day Mode */
+.meetContainer.dayMode .peopleItem {
+    background: #f8fafc;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.meetContainer.dayMode .peopleItem:hover {
+    background: #f1f5f9;
+}
+
+.meetContainer.dayMode .peopleName {
+    color: #0f172a;
+}
+
+.meetContainer.dayMode .peopleRole {
+    color: #64748b;
+}
+
+.meetContainer.dayMode .peopleAvatar {
+    background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+    color: #1e293b;
+}
+
+/* More Options in Day Mode */
+.meetContainer.dayMode .moreOptionItem:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.meetContainer.dayMode .moreOptionTitle {
+    color: #0f172a;
+}
+
+.meetContainer.dayMode .moreOptionSub {
+    color: #64748b;
+}
+
+.meetContainer.dayMode .moreOptionCard {
+    background: #f8fafc;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: #334155;
+}
+
+/* Chat in Day Mode */
+.meetContainer.dayMode .chatDisclaimerBox {
+    background: rgba(241, 245, 249, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: #475569;
+}
+
+.meetContainer.dayMode .chatDisclaimerHeader {
+    color: #1e293b;
+}
+
+.meetContainer.dayMode .chatEmptyState {
+    color: #64748b;
+}
+
+.meetContainer.dayMode .chatMsgOther .chatMsgBubble {
+    background: #f1f5f9;
+    color: #0f172a;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.meetContainer.dayMode .chatInputDock {
+    background: rgba(255, 255, 255, 0.95);
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.meetContainer.dayMode .chatInputCapsule {
+    background: #f1f5f9;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #0f172a;
+}
+
+.meetContainer.dayMode .chatInputCapsule::placeholder {
+    color: #94a3b8;
+}
+
+/* Reactions Popup in Day Mode */
+.meetContainer.dayMode .reactionsPopup {
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+}
+
+/* Knock Toast in Day Mode */
+.meetContainer.dayMode .knockToast {
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #0f172a;
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.16);
+}
+
+.meetContainer.dayMode .knockText strong {
+    color: #0f172a;
+}
+
+.meetContainer.dayMode .knockText span {
+    color: #64748b;
+}
+
+/* Lobby Screen Day Mode */
+.lobbyContainer.dayMode {
+    background: radial-gradient(circle at 50% 10%, #ffffff 0%, #edf2f7 85%);
+    color: #0f172a;
+}
+
+.lobbyContainer.dayMode .lobbyGlow {
+    opacity: 0.3;
+}
+
+.lobbyContainer.dayMode .lobbyCard {
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12);
+    color: #0f172a;
+}
+
+.lobbyContainer.dayMode .lobbyHeader h2 {
+    color: #0f172a;
+}
+
+.lobbyContainer.dayMode .lobbySubtitle {
+    color: #64748b;
+}
+
+.lobbyContainer.dayMode :global(.glassTextField) .MuiOutlinedInput-root {
+    color: #0f172a;
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.lobbyContainer.dayMode :global(.glassTextField) .MuiOutlinedInput-notchedOutline {
+    border-color: rgba(0, 0, 0, 0.18);
+}
+
+.lobbyContainer.dayMode :global(.glassTextField) .MuiInputLabel-root {
+    color: #64748b;
+}
+
+.lobbyContainer.dayMode .themeToggleBtn {
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #475569;
+}
+
+.lobbyContainer.dayMode .themeToggleBtn:hover {
+    background: rgba(0, 0, 0, 0.08);
+    color: #0f172a;
+}
+
+/* Waiting Screen Day Mode */
+.waitingLobbyContainer.dayMode {
+    background: radial-gradient(circle at 50% 20%, #ffffff 0%, #edf2f7 85%);
+    color: #0f172a;
+}
+
+.waitingLobbyContainer.dayMode .waitingCard {
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12);
+}
+
+.waitingLobbyContainer.dayMode .waitingCard h2 {
+    color: #0f172a;
+}
+
+.waitingLobbyContainer.dayMode .waitingCard p {
+    color: #475569;
+}

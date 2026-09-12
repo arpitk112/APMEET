@@ -32,6 +32,8 @@ import PushPinIcon from "@mui/icons-material/PushPin";
 import DevicesIcon from "@mui/icons-material/Devices";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
 import Whiteboard from "../components/Whiteboard";
 import { useNavigate } from "react-router-dom";
 import server from "../environment";
@@ -224,6 +226,27 @@ export default function VideoMeetComponent(): React.JSX.Element {
     });
     const [mobileSlideIdx, setMobileSlideIdx] = useState<number>(0);
     const touchStartX = useRef<number | null>(null);
+
+    // Theme state: 'night' (default, maintaining existing dark navy palette) | 'day' (light theme)
+    const [theme, setTheme] = useState<'night' | 'day'>(() => {
+        try {
+            const saved = localStorage.getItem("apm_theme");
+            if (saved === 'day' || saved === 'night') return saved;
+            return 'night';
+        } catch (e) {
+            return 'night';
+        }
+    });
+
+    const toggleTheme = () => {
+        setTheme(prev => {
+            const next = prev === 'night' ? 'day' : 'night';
+            try {
+                localStorage.setItem("apm_theme", next);
+            } catch (e) {}
+            return next;
+        });
+    };
 
     useEffect(() => {
         const handleResize = () => {
@@ -1018,7 +1041,20 @@ export default function VideoMeetComponent(): React.JSX.Element {
     // 1. Lobby Screen (Enter name & check preview)
     if (callState === 'lobby') {
         return (
-            <div className={styles.lobbyContainer}>
+            <div className={`${styles.lobbyContainer} ${theme === 'day' ? styles.dayMode : ''}`}>
+                <div className={styles.lobbyThemeToggleWrap}>
+                    <div
+                        className={styles.themeToggleBtn}
+                        onClick={toggleTheme}
+                        title={theme === 'night' ? "Switch to Day Mode" : "Switch to Night Mode"}
+                    >
+                        {theme === 'night' ? (
+                            <LightModeIcon style={{ fontSize: 18, color: '#fbbf24' }} />
+                        ) : (
+                            <DarkModeIcon style={{ fontSize: 18, color: '#6366f1' }} />
+                        )}
+                    </div>
+                </div>
                 <div className={styles.lobbyGlow}></div>
                 <div className={styles.lobbyCard}>
                     <div className={styles.lobbyHeader}>
@@ -1070,7 +1106,7 @@ export default function VideoMeetComponent(): React.JSX.Element {
     // 2. Waiting Room Screen (Guest waiting for host admission)
     if (callState === 'waiting') {
         return (
-            <div className={styles.waitingLobbyContainer}>
+            <div className={`${styles.waitingLobbyContainer} ${theme === 'day' ? styles.dayMode : ''}`}>
                 <div className={styles.waitingCard}>
                     <div className={styles.waitingPulseDot}>
                         <VideocamIcon style={{ color: '#fff', fontSize: 28 }} />
@@ -1092,7 +1128,7 @@ export default function VideoMeetComponent(): React.JSX.Element {
     // 3. Denied or Kicked Screen
     if (callState === 'denied' || callState === 'kicked') {
         return (
-            <div className={styles.waitingLobbyContainer}>
+            <div className={`${styles.waitingLobbyContainer} ${theme === 'day' ? styles.dayMode : ''}`}>
                 <div className={styles.waitingCard}>
                     <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <CloseIcon style={{ color: '#ef4444', fontSize: 32 }} />
@@ -1113,7 +1149,7 @@ export default function VideoMeetComponent(): React.JSX.Element {
 
     // 4. In-Call Google Meet Interface
     return (
-        <div className={styles.meetContainer}>
+        <div className={`${styles.meetContainer} ${theme === 'day' ? styles.dayMode : ''}`}>
             {isReconnecting && (
                 <div style={{
                     position: 'absolute',
@@ -1138,7 +1174,7 @@ export default function VideoMeetComponent(): React.JSX.Element {
                     Reconnecting to meeting...
                 </div>
             )}
-            {/* Top Bar (Clock, Meeting Code, Participant Counter Badge, Whiteboard Trigger) */}
+            {/* Top Bar (Clock, Meeting Code, Participant Counter Badge, Whiteboard Trigger, Day/Night Toggle) */}
             <div className={styles.topBar}>
                 <div className={styles.topBarLeft}>
                     <span className={styles.liveClock}>{currentTime}</span>
@@ -1179,6 +1215,18 @@ export default function VideoMeetComponent(): React.JSX.Element {
                         title="Open Collaborative Whiteboard"
                     >
                         <DrawIcon style={{ fontSize: 16 }} />
+                    </div>
+
+                    <div
+                        className={styles.themeToggleBtn}
+                        onClick={toggleTheme}
+                        title={theme === 'night' ? "Switch to Day Mode" : "Switch to Night Mode"}
+                    >
+                        {theme === 'night' ? (
+                            <LightModeIcon style={{ fontSize: 16, color: '#fbbf24' }} />
+                        ) : (
+                            <DarkModeIcon style={{ fontSize: 16, color: '#6366f1' }} />
+                        )}
                     </div>
                 </div>
             </div>
@@ -2084,7 +2132,7 @@ export default function VideoMeetComponent(): React.JSX.Element {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 6 }}>
                                 {pendingKnocks.map(k => (
                                     <div key={k.socketId} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.25)', padding: '6px 10px', borderRadius: 8 }}>
-                                        <span style={{ fontSize: '0.84rem', color: '#fff' }}>{k.username}</span>
+                                        <span style={{ fontSize: '0.84rem', fontWeight: 500 }}>{k.username}</span>
                                         <div style={{ display: 'flex', gap: 6 }}>
                                             <button className={styles.denyBtn} onClick={() => handleDeny(k.socketId)} style={{ padding: '2px 8px', fontSize: '0.74rem' }}>Deny</button>
                                             <button className={styles.admitBtn} onClick={() => handleAdmit(k.socketId)} style={{ padding: '2px 8px', fontSize: '0.74rem' }}>Admit</button>
@@ -2159,7 +2207,7 @@ export default function VideoMeetComponent(): React.JSX.Element {
 
                         <div className={styles.hostChatSwitchRow} style={{ padding: 0, border: 'none', background: 'transparent' }}>
                             <div>
-                                <div style={{ color: '#ffffff', fontWeight: 500 }}>Let participants send chat messages</div>
+                                <div style={{ fontWeight: 500 }}>Let participants send chat messages</div>
                                 <div style={{ fontSize: '0.74rem', color: '#94a3b8' }}>Turn off to restrict chat to hosts only</div>
                             </div>
                             <Switch
@@ -2267,6 +2315,37 @@ export default function VideoMeetComponent(): React.JSX.Element {
                                 </div>
                             </div>
                         )}
+
+                        {/* Day / Night Theme Mode Toggle */}
+                        <div
+                            className={styles.moreOptionItem}
+                            onClick={toggleTheme}
+                        >
+                            <div className={styles.moreOptionIconWrap}>
+                                {theme === 'night' ? (
+                                    <LightModeIcon style={{ fontSize: 22, color: '#fbbf24' }} />
+                                ) : (
+                                    <DarkModeIcon style={{ fontSize: 22, color: '#6366f1' }} />
+                                )}
+                            </div>
+                            <div className={styles.moreOptionInfo} style={{ flex: 1 }}>
+                                <div className={styles.moreOptionTitle}>{theme === 'night' ? "Night Mode" : "Day Mode"}</div>
+                                <div className={styles.moreOptionSub}>Switch to {theme === 'night' ? "day (light)" : "night (dark)"} theme</div>
+                            </div>
+                            <Switch
+                                checked={theme === 'night'}
+                                onChange={toggleTheme}
+                                size="small"
+                                sx={{
+                                    '& .MuiSwitch-switchBase.Mui-checked': {
+                                        color: '#38bdf8',
+                                    },
+                                    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                                        backgroundColor: '#2563eb',
+                                    },
+                                }}
+                            />
+                        </div>
 
                         {/* Joining Info Card */}
                         <div className={styles.moreOptionCard}>
